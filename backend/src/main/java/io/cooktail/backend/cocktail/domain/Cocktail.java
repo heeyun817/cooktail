@@ -5,8 +5,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +21,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Table(name = "cocktail")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
 public class Cocktail {
 
   @Id
@@ -31,6 +33,9 @@ public class Cocktail {
   // 본문
   @Column(name = "content", nullable = false, columnDefinition = "TEXT")
   private String content;
+  //이미지
+  @OneToMany(mappedBy = "cocktail")
+  private final List<CocktailImage> cocktailImages = new ArrayList<>();
   // 도수
   @Column(name = "abv")
   private double abv;
