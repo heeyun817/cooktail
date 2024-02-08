@@ -9,6 +9,10 @@ import org.springframework.data.domain.Pageable;
 
 public interface CocktailService {
 
+  // 전체 글 조회
   Page<CocktailRs> findAll(Pageable pageable);
+  // 게시글 id별 조회
+  CocktailRs findById(Long id);
+  // 글 작성
   Cocktail createCocktail(long member, CocktailRq cocktailRq, List<String> imageUrls);
 }

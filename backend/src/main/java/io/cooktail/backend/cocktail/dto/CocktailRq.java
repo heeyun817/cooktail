@@ -1,8 +1,5 @@
 package io.cooktail.backend.cocktail.dto;
 
-import io.cooktail.backend.cocktail.domain.CocktailImage;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;

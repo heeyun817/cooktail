@@ -30,6 +30,12 @@ public class CocktailController {
       return service.findAll(pageable);
   }
 
+  // id로 조회
+  @GetMapping("/cocktails/{id}")
+  public CocktailRs getCocktailById(@PathVariable Long id) {
+    return service.findById(id);
+  }
+
   // 작성
   @PostMapping("/cocktails")
   public Cocktail createCocktail(
@@ -39,15 +45,6 @@ public class CocktailController {
     String dirName = "cocktail";
     List<String> imageUrls = s3Uploader.uploadFiles(dirName, images);
     return service.createCocktail(member,cocktailRq,imageUrls);
-  }
-
-  // S3 test
-  @PostMapping("/upload")
-  public ResponseEntity<List<String>> uploadFiles(
-      @RequestParam("files") List<MultipartFile> files) {
-      String folder = "test";
-      List<String> uploadedFileUrls = s3Uploader.uploadFiles(folder, files);
-      return ResponseEntity.ok(uploadedFileUrls);
   }
 
 }
