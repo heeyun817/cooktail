@@ -79,4 +79,19 @@ public class CocktailServiceImpl implements CocktailService{
     }
     return cocktail;
   }
+
+  // 검색
+  @Override
+  public Page<CocktailRs> search(Pageable pageable, String keyword) {
+    Page<Cocktail> cocktailPage = cocktailRepository.findByTitleContaining(keyword,pageable);
+
+    Page<CocktailRs> cocktailRs = cocktailPage.map(cocktail -> CocktailRs.builder()
+        .cocktail(cocktail)
+        .images(cocktail.getCocktailImages().stream()
+            .map(CocktailImage::getImageUrl)
+            .collect(Collectors.toList()))
+        .build());
+
+    return cocktailRs;
+  }
 }

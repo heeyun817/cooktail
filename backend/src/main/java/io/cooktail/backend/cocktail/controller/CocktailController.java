@@ -22,11 +22,16 @@ public class CocktailController {
   private final CocktailService service;
   private final S3Uploader s3Uploader;
 
-  // 모든 글 조회
+  // 모든 글 조회, 검색
   @GetMapping("/cocktails")
   public Page<CocktailRs> getAllCocktail(
-      @PageableDefault(page = 0, size = 8, sort = "createdAt", direction = Direction.DESC) Pageable pageable) {
+      @PageableDefault(page = 0, size = 8, sort = "createdAt", direction = Direction.DESC) Pageable pageable,
+      @RequestParam(required = false) String keyword) {
+
+    if (keyword == null) {
       return service.findAll(pageable);
+    }
+    else return service.search(pageable,keyword);
   }
 
   // id로 조회
