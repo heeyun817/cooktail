@@ -63,7 +63,7 @@ public class CocktailServiceImpl implements CocktailService{
   // 글 작성
   @Override
   @Transactional
-  public Cocktail createCocktail(long member, CocktailRq cocktailRq, List<String> imageUrls) {
+  public Long createCocktail(long member, CocktailRq cocktailRq, List<String> imageUrls) {
     Cocktail cocktail = cocktailRepository.save(Cocktail.builder()
         .title(cocktailRq.getTitle())
         .content(cocktailRq.getContent())
@@ -77,7 +77,7 @@ public class CocktailServiceImpl implements CocktailService{
           .cocktail(cocktail)
           .build());
     }
-    return cocktail;
+    return cocktail.getId();
   }
 
   // 검색

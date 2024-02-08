@@ -43,7 +43,7 @@ public class CocktailController {
 
   // 작성
   @PostMapping("/cocktails")
-  public Cocktail createCocktail(
+  public Long createCocktail(
       @RequestParam long member,
       @ModelAttribute CocktailRq cocktailRq,
       @RequestPart(value = "images") List<MultipartFile> images) throws IOException {
