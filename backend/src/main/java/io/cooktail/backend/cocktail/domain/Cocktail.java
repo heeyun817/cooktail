@@ -1,7 +1,9 @@
 package io.cooktail.backend.cocktail.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -34,7 +37,7 @@ public class Cocktail {
   @Column(name = "content", nullable = false, columnDefinition = "TEXT")
   private String content;
   //이미지
-  @OneToMany(mappedBy = "cocktail")
+  @OneToMany(mappedBy = "cocktail", cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
   private final List<CocktailImage> cocktailImages = new ArrayList<>();
   // 도수
   @Column(name = "abv")
@@ -57,5 +60,13 @@ public class Cocktail {
   // 좋아요수
   @Column(name = "likes",columnDefinition = "integer default 0", nullable = false)
   private int likes;
+
+  @Builder
+  public Cocktail(String title, String content, double abv, long member) {
+    this.title = title;
+    this.content = content;
+    this.abv = abv;
+    this.member = member;
+  }
 
 }

@@ -29,10 +29,6 @@ public class S3Uploader {
 
     for (MultipartFile multipartFile : multipartFiles) {
 
-      if (multipartFile.isEmpty()) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "빈 파일은 업로드할 수 없습니다.");
-      }
-
       String uploadFileUrl = "";
 
       ObjectMetadata objectMetadata = new ObjectMetadata();

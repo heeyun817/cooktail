@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class CocktailImage {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "cocktail_image_id")
@@ -28,4 +30,10 @@ public class CocktailImage {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "cocktail_id", nullable=false)
   private Cocktail cocktail;
+
+  @Builder
+  public CocktailImage(String imageUrl, Cocktail cocktail) {
+    this.imageUrl = imageUrl;
+    this.cocktail = cocktail;
+  }
 }
