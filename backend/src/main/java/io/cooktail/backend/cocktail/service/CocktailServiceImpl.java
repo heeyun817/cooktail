@@ -6,6 +6,7 @@ import io.cooktail.backend.cocktail.dto.CocktailRq;
 import io.cooktail.backend.cocktail.dto.CocktailRs;
 import io.cooktail.backend.cocktail.repository.CocktailImageRepository;
 import io.cooktail.backend.cocktail.repository.CocktailRepository;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -52,8 +53,16 @@ public class CocktailServiceImpl implements CocktailService{
     return cocktailRs;
   }
 
+  // 조회수 증가
+  @Override
+  @Transactional
+  public int updateView(Long id){
+    return cocktailRepository.updateView(id);
+  }
+
   // 글 작성
   @Override
+  @Transactional
   public Cocktail createCocktail(long member, CocktailRq cocktailRq, List<String> imageUrls) {
     Cocktail cocktail = cocktailRepository.save(Cocktail.builder()
         .title(cocktailRq.getTitle())

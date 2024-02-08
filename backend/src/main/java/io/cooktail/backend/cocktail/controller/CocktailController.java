@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +32,7 @@ public class CocktailController {
   // id로 조회
   @GetMapping("/cocktails/{id}")
   public CocktailRs getCocktailById(@PathVariable Long id) {
+    service.updateView(id);
     return service.findById(id);
   }
 

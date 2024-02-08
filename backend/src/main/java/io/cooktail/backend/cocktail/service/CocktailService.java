@@ -13,6 +13,8 @@ public interface CocktailService {
   Page<CocktailRs> findAll(Pageable pageable);
   // 게시글 id별 조회
   CocktailRs findById(Long id);
+  // 조회수 증가
+  int updateView(Long id);
   // 글 작성
   Cocktail createCocktail(long member, CocktailRq cocktailRq, List<String> imageUrls);
 }
