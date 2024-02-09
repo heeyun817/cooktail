@@ -20,6 +20,8 @@ public interface CocktailService {
   Long createCocktail(long member, CocktailRq cocktailRq, List<String> imageUrls);
   // 글 수정
   Long updateCocktail(Long id, CocktailRq cocktailRq, List<MultipartFile> newImages);
+  // 삭제
+  void deleteCocktail(Long id);
   // 검색
   Page<CocktailRs> search(Pageable pageable, String keyword);
 }

@@ -13,7 +13,7 @@ public class CocktailRq {
   private double abv;
 
   @Builder
-  public CocktailRq(String title, String content, double abv, long member) {
+  public CocktailRq(String title, String content, double abv) {
     this.title = title;
     this.content = content;
     this.abv = abv;

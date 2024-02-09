@@ -59,5 +59,11 @@ public class CocktailController {
       @RequestPart(value = "images") List<MultipartFile> images) throws IOException {
     return service.updateCocktail(id, cocktailRq, images);
   }
+  // 삭제
+  @DeleteMapping("/cocktails/{id}")
+  public String deleteCocktail(@PathVariable Long id) {
+    service.deleteCocktail(id);
+    return "성공적으로 삭제되었습니다";
+  }
 
 }

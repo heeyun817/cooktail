@@ -110,6 +110,23 @@ public class CocktailServiceImpl implements CocktailService{
     return id;
   }
 
+  // 삭제
+  @Transactional
+  @Override
+  public void deleteCocktail(Long id) {
+    Cocktail cocktail = cocktailRepository.findById(id).orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 글을 찾을 수 없습니다: " + id));
+
+    // 연결된 이미지 삭제
+    List<CocktailImage> cocktailImages = cocktail.getCocktailImages();
+    for (CocktailImage image : cocktailImages) {
+      s3Uploader.deleteFile(image.getImageUrl());
+      cocktailImageRepository.delete(image);
+    }
+
+    // 글 삭제
+    cocktailRepository.delete(cocktail);
+  }
+
   // 검색
   @Override
   public Page<CocktailRs> search(Pageable pageable, String keyword) {
