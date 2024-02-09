@@ -1,11 +1,17 @@
 package io.cooktail.backend.cocktail.service;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -50,5 +56,24 @@ public class S3Uploader {
       s3files.add(uploadFileUrl);
     }
     return s3files;
+  }
+
+  public void deleteFile(String imageUrl) {
+    String key = getKeyFromImageUrl(imageUrl);
+    try{
+      amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, key));
+    }catch (AmazonServiceException e){
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "S3 이미지 삭제 중 오류가 발생했습니다.", e);
+    }
+  }
+
+  private String getKeyFromImageUrl(String imageUrl){
+    try{
+      URL url = new URL(imageUrl);
+      String decodingKey = URLDecoder.decode(url.getPath(), "UTF-8");
+      return decodingKey.substring(1); // 맨 앞의 '/' 제거
+    }catch (MalformedURLException | UnsupportedEncodingException e){
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "S3 이미지 키 추출 중 오류가 발생했습니다. 이미지 URL: " + imageUrl, e);
+    }
   }
 }

@@ -6,6 +6,7 @@ import io.cooktail.backend.cocktail.dto.CocktailRs;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface CocktailService {
 
@@ -17,6 +18,8 @@ public interface CocktailService {
   int updateView(Long id);
   // 글 작성
   Long createCocktail(long member, CocktailRq cocktailRq, List<String> imageUrls);
+  // 글 수정
+  Long updateCocktail(Long id, CocktailRq cocktailRq, List<MultipartFile> newImages);
   // 검색
   Page<CocktailRs> search(Pageable pageable, String keyword);
 }

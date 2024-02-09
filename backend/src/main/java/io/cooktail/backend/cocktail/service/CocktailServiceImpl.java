@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class CocktailServiceImpl implements CocktailService{
 
   private final CocktailRepository cocktailRepository;
   private final CocktailImageRepository cocktailImageRepository;
+  private final S3Uploader s3Uploader;
 
   // 전체 글 조회
   @Override
@@ -78,6 +80,34 @@ public class CocktailServiceImpl implements CocktailService{
           .build());
     }
     return cocktail.getId();
+  }
+
+  // 글 수정
+  @Override
+  @Transactional
+  public Long updateCocktail(Long id, CocktailRq cocktailRq, List<MultipartFile> newImages) {
+    Cocktail cocktail = cocktailRepository.findById(id).orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 글을 찾을 수 없습니다: " + id));
+
+    cocktail.update(cocktailRq.getTitle(), cocktailRq.getContent(), cocktailRq.getAbv());
+    cocktailRepository.save(cocktail);
+
+    // 기존 이미지 삭제
+    List<CocktailImage> existingImages = cocktail.getCocktailImages();
+    for (CocktailImage image : existingImages) {
+      s3Uploader.deleteFile(image.getImageUrl());
+      cocktailImageRepository.delete(image);
+    }
+
+    // 새 이미지 업로드 및 연결
+    String dirName = "cocktail";
+    List<String> newImageUrls = s3Uploader.uploadFiles(dirName, newImages);
+    for (String imageUrl : newImageUrls) {
+      cocktailImageRepository.save(CocktailImage.builder()
+          .imageUrl(imageUrl)
+          .cocktail(cocktail)
+          .build());
+    }
+    return id;
   }
 
   // 검색

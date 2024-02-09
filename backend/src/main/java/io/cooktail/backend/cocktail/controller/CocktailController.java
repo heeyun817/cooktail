@@ -1,6 +1,5 @@
 package io.cooktail.backend.cocktail.controller;
 
-import io.cooktail.backend.cocktail.domain.Cocktail;
 import io.cooktail.backend.cocktail.dto.CocktailRq;
 import io.cooktail.backend.cocktail.dto.CocktailRs;
 import io.cooktail.backend.cocktail.service.CocktailService;
@@ -50,6 +49,15 @@ public class CocktailController {
     String dirName = "cocktail";
     List<String> imageUrls = s3Uploader.uploadFiles(dirName, images);
     return service.createCocktail(member,cocktailRq,imageUrls);
+  }
+
+  // 수정
+  @PutMapping ("/cocktails/{id}")
+  public Long updateCocktail(
+      @PathVariable Long id,
+      @ModelAttribute CocktailRq cocktailRq,
+      @RequestPart(value = "images") List<MultipartFile> images) throws IOException {
+    return service.updateCocktail(id, cocktailRq, images);
   }
 
 }

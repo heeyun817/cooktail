@@ -68,4 +68,10 @@ public class Cocktail {
     this.member = member;
   }
 
+  public void update(String title, String content, double abv) {
+    this.title = title;
+    this.content = content;
+    this.abv = abv;
+  }
+
 }
