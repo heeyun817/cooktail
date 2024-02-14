@@ -1,4 +1,4 @@
-package io.cooktail.backend.cocktail.config;
+package io.cooktail.backend.global.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
