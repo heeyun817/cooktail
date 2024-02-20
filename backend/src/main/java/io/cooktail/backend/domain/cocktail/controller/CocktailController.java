@@ -1,9 +1,9 @@
-package io.cooktail.backend.cocktail.controller;
+package io.cooktail.backend.domain.cocktail.controller;
 
-import io.cooktail.backend.cocktail.dto.CocktailRq;
-import io.cooktail.backend.cocktail.dto.CocktailRs;
-import io.cooktail.backend.cocktail.service.CocktailService;
-import io.cooktail.backend.cocktail.service.S3Uploader;
+import io.cooktail.backend.domain.cocktail.dto.CocktailRq;
+import io.cooktail.backend.domain.cocktail.dto.CocktailRs;
+import io.cooktail.backend.domain.cocktail.service.CocktailService;
+import io.cooktail.backend.domain.cocktail.service.S3Uploader;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

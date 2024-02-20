@@ -1,11 +1,11 @@
-package io.cooktail.backend.cocktail.service;
+package io.cooktail.backend.domain.cocktail.service;
 
-import io.cooktail.backend.cocktail.domain.Cocktail;
-import io.cooktail.backend.cocktail.domain.CocktailImage;
-import io.cooktail.backend.cocktail.dto.CocktailRq;
-import io.cooktail.backend.cocktail.dto.CocktailRs;
-import io.cooktail.backend.cocktail.repository.CocktailImageRepository;
-import io.cooktail.backend.cocktail.repository.CocktailRepository;
+import io.cooktail.backend.domain.cocktail.domain.Cocktail;
+import io.cooktail.backend.domain.cocktail.domain.CocktailImage;
+import io.cooktail.backend.domain.cocktail.dto.CocktailRq;
+import io.cooktail.backend.domain.cocktail.dto.CocktailRs;
+import io.cooktail.backend.domain.cocktail.repository.CocktailImageRepository;
+import io.cooktail.backend.domain.cocktail.repository.CocktailRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;

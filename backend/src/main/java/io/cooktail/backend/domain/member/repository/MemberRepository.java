@@ -1,6 +1,6 @@
-package io.cooktail.backend.member.repository;
+package io.cooktail.backend.domain.member.repository;
 
-import io.cooktail.backend.member.domain.Member;
+import io.cooktail.backend.domain.member.domain.Member;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 

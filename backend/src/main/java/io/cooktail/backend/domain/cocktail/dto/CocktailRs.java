@@ -1,6 +1,6 @@
-package io.cooktail.backend.cocktail.dto;
+package io.cooktail.backend.domain.cocktail.dto;
 
-import io.cooktail.backend.cocktail.domain.Cocktail;
+import io.cooktail.backend.domain.cocktail.domain.Cocktail;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;

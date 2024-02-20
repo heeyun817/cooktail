@@ -1,4 +1,4 @@
-package io.cooktail.backend.member.domain;
+package io.cooktail.backend.domain.member.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

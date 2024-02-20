@@ -1,4 +1,4 @@
-package io.cooktail.backend.member.dto;
+package io.cooktail.backend.domain.member.dto;
 
 import java.time.LocalDateTime;
 import lombok.Builder;
