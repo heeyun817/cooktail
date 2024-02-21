@@ -7,7 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Past;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,13 +24,13 @@ public class Member {
   @Column(name = "member_id")
   private Long id;
 
-  @Column(name = "email", nullable = false, unique = true, length = 50)
+  @Column(name = "email", nullable = false, unique = true)
   private String email;
 
-  @Column(name = "password", nullable = false, length = 50)
+  @Column(name = "password", nullable = false)
   private String password;
 
-  @Column(name = "name", nullable = false, length = 50)
+  @Column(name = "name", nullable = false)
   private String name;
 
   @Column(name = "image", nullable=false)
@@ -38,10 +38,10 @@ public class Member {
 
   @Past
   @Column(name = "birth_date", nullable=false)
-  private LocalDateTime birthDate;
+  private LocalDate birthDate;
 
   @Builder
-  public Member(String email, String password, String name, String image, LocalDateTime birthDate) {
+  public Member(String email, String password, String name, String image, LocalDate birthDate) {
     this.email = email;
     this.password = password;
     this.name = name;
