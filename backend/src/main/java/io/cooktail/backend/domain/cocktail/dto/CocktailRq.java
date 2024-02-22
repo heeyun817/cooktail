@@ -1,4 +1,4 @@
-package io.cooktail.backend.cocktail.dto;
+package io.cooktail.backend.domain.cocktail.dto;
 
 import lombok.Builder;
 import lombok.Data;

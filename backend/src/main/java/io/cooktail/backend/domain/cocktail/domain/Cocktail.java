@@ -1,4 +1,4 @@
-package io.cooktail.backend.cocktail.domain;
+package io.cooktail.backend.domain.cocktail.domain;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

@@ -1,6 +1,6 @@
-package io.cooktail.backend.cocktail.repository;
+package io.cooktail.backend.domain.cocktail.repository;
 
-import io.cooktail.backend.cocktail.domain.Cocktail;
+import io.cooktail.backend.domain.cocktail.domain.Cocktail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

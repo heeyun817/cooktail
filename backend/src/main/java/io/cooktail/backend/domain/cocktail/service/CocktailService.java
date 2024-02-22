@@ -1,8 +1,7 @@
-package io.cooktail.backend.cocktail.service;
+package io.cooktail.backend.domain.cocktail.service;
 
-import io.cooktail.backend.cocktail.domain.Cocktail;
-import io.cooktail.backend.cocktail.dto.CocktailRq;
-import io.cooktail.backend.cocktail.dto.CocktailRs;
+import io.cooktail.backend.domain.cocktail.dto.CocktailRq;
+import io.cooktail.backend.domain.cocktail.dto.CocktailRs;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

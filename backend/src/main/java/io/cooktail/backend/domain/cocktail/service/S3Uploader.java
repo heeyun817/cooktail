@@ -1,4 +1,4 @@
-package io.cooktail.backend.cocktail.service;
+package io.cooktail.backend.domain.cocktail.service;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3Client;
