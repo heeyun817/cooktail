@@ -30,4 +30,11 @@ public class MemberServiceImpl implements MemberService{
         .build();
     memberRepository.save(member);
   }
+
+  // 로그인 확인
+  public Member login(String email, String password) {
+    return memberRepository.findByEmail(email)
+        .filter(member -> passwordEncoder.matches(password, member.getPassword()))
+        .orElse(null);
+  }
 }
