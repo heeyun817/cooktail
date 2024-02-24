@@ -1,6 +1,7 @@
 package io.cooktail.backend.domain.cocktail.dto;
 
 import io.cooktail.backend.domain.cocktail.domain.Cocktail;
+import io.cooktail.backend.domain.member.domain.Member;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
@@ -14,7 +15,7 @@ public class CocktailRs {
   private String title;
   private String content;
   private double abv;
-  private long member;
+  private Member member;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
   private int views;

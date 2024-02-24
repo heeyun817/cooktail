@@ -6,6 +6,7 @@ import io.cooktail.backend.domain.cocktail.dto.CocktailRq;
 import io.cooktail.backend.domain.cocktail.dto.CocktailRs;
 import io.cooktail.backend.domain.cocktail.repository.CocktailImageRepository;
 import io.cooktail.backend.domain.cocktail.repository.CocktailRepository;
+import io.cooktail.backend.domain.member.domain.Member;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -65,7 +66,7 @@ public class CocktailServiceImpl implements CocktailService{
   // 글 작성
   @Override
   @Transactional
-  public Long createCocktail(long member, CocktailRq cocktailRq, List<String> imageUrls) {
+  public Long createCocktail(Member member, CocktailRq cocktailRq, List<String> imageUrls) {
     Cocktail cocktail = cocktailRepository.save(Cocktail.builder()
         .title(cocktailRq.getTitle())
         .content(cocktailRq.getContent())

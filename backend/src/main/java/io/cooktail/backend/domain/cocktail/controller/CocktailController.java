@@ -4,6 +4,7 @@ import io.cooktail.backend.domain.cocktail.dto.CocktailRq;
 import io.cooktail.backend.domain.cocktail.dto.CocktailRs;
 import io.cooktail.backend.domain.cocktail.service.CocktailService;
 import io.cooktail.backend.domain.cocktail.service.S3Uploader;
+import io.cooktail.backend.domain.member.domain.Member;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class CocktailController {
   // 작성
   @PostMapping("/cocktails")
   public Long createCocktail(
-      @RequestParam long member,
+      @RequestParam Member member,
       @ModelAttribute CocktailRq cocktailRq,
       @RequestPart(value = "images") List<MultipartFile> images) throws IOException {
     String dirName = "cocktail";
