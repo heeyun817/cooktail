@@ -17,7 +17,7 @@ public interface CocktailService {
   // 조회수 증가
   int updateView(Long id);
   // 글 작성
-  Long createCocktail(Member member, CocktailRq cocktailRq, List<String> imageUrls);
+  Long createCocktail(Long memberId, CocktailRq cocktailRq, List<String> imageUrls);
   // 글 수정
   Long updateCocktail(Long id, CocktailRq cocktailRq, List<MultipartFile> newImages);
   // 삭제

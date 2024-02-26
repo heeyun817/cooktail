@@ -7,6 +7,7 @@ import io.cooktail.backend.domain.cocktail.dto.CocktailRs;
 import io.cooktail.backend.domain.cocktail.repository.CocktailImageRepository;
 import io.cooktail.backend.domain.cocktail.repository.CocktailRepository;
 import io.cooktail.backend.domain.member.domain.Member;
+import io.cooktail.backend.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -23,6 +24,7 @@ public class CocktailServiceImpl implements CocktailService{
 
   private final CocktailRepository cocktailRepository;
   private final CocktailImageRepository cocktailImageRepository;
+  private final MemberRepository memberRepository;
   private final S3Uploader s3Uploader;
 
   // 전체 글 조회
@@ -66,7 +68,11 @@ public class CocktailServiceImpl implements CocktailService{
   // 글 작성
   @Override
   @Transactional
-  public Long createCocktail(Member member, CocktailRq cocktailRq, List<String> imageUrls) {
+  public Long createCocktail(Long memberId, CocktailRq cocktailRq, List<String> imageUrls) {
+
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 Member를 찾을 수 없습니다: " + memberId));
+
     Cocktail cocktail = cocktailRepository.save(Cocktail.builder()
         .title(cocktailRq.getTitle())
         .content(cocktailRq.getContent())
