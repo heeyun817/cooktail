@@ -35,9 +35,12 @@ public class Cocktail {
   // 제목
   @Column(name = "title", nullable = false)
   private String title;
-  // 본문
-  @Column(name = "content", nullable = false, columnDefinition = "TEXT")
-  private String content;
+  // 재료
+  @Column(name = "ingredient", nullable = false, columnDefinition = "TEXT")
+  private String ingredient;
+  // 레시피
+  @Column(name = "recipe", nullable = false, columnDefinition = "TEXT")
+  private String recipe;
   //이미지
   @OneToMany(mappedBy = "cocktail", cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
   private final List<CocktailImage> cocktailImages = new ArrayList<>();
@@ -64,16 +67,18 @@ public class Cocktail {
   private int likes;
 
   @Builder
-  public Cocktail(String title, String content, double abv, Member member) {
+  public Cocktail(String title, String ingredient, String recipe, double abv, Member member) {
     this.title = title;
-    this.content = content;
+    this.ingredient = ingredient;
+    this.recipe = recipe;
     this.abv = abv;
     this.member = member;
   }
 
-  public void update(String title, String content, double abv) {
+  public void update(String title, String ingredient, String recipe, double abv) {
     this.title = title;
-    this.content = content;
+    this.ingredient = ingredient;
+    this.recipe = recipe;
     this.abv = abv;
   }
 
