@@ -2,6 +2,7 @@ package io.cooktail.backend.domain.cocktail.service;
 
 import io.cooktail.backend.domain.cocktail.dto.CocktailRq;
 import io.cooktail.backend.domain.cocktail.dto.CocktailRs;
+import io.cooktail.backend.domain.member.domain.Member;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,11 +17,13 @@ public interface CocktailService {
   // 조회수 증가
   int updateView(Long id);
   // 글 작성
-  Long createCocktail(long member, CocktailRq cocktailRq, List<String> imageUrls);
+  Long createCocktail(Long memberId, CocktailRq cocktailRq, List<String> imageUrls);
   // 글 수정
   Long updateCocktail(Long id, CocktailRq cocktailRq, List<MultipartFile> newImages);
   // 삭제
   void deleteCocktail(Long id);
+  // 작성자 검사
+  boolean isCocktailAuthor(Long cocktailId, Long memberId);
   // 검색
   Page<CocktailRs> search(Pageable pageable, String keyword);
 }

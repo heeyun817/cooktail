@@ -6,9 +6,12 @@ import io.cooktail.backend.domain.cocktail.dto.CocktailRq;
 import io.cooktail.backend.domain.cocktail.dto.CocktailRs;
 import io.cooktail.backend.domain.cocktail.repository.CocktailImageRepository;
 import io.cooktail.backend.domain.cocktail.repository.CocktailRepository;
+import io.cooktail.backend.domain.member.domain.Member;
+import io.cooktail.backend.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +25,7 @@ public class CocktailServiceImpl implements CocktailService{
 
   private final CocktailRepository cocktailRepository;
   private final CocktailImageRepository cocktailImageRepository;
+  private final MemberRepository memberRepository;
   private final S3Uploader s3Uploader;
 
   // 전체 글 조회
@@ -65,10 +69,15 @@ public class CocktailServiceImpl implements CocktailService{
   // 글 작성
   @Override
   @Transactional
-  public Long createCocktail(long member, CocktailRq cocktailRq, List<String> imageUrls) {
+  public Long createCocktail(Long memberId, CocktailRq cocktailRq, List<String> imageUrls) {
+
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 Member를 찾을 수 없습니다: " + memberId));
+
     Cocktail cocktail = cocktailRepository.save(Cocktail.builder()
         .title(cocktailRq.getTitle())
-        .content(cocktailRq.getContent())
+        .ingredient(cocktailRq.getIngredient())
+        .recipe(cocktailRq.getRecipe())
         .abv(cocktailRq.getAbv())
         .member(member)
         .build());
@@ -88,7 +97,7 @@ public class CocktailServiceImpl implements CocktailService{
   public Long updateCocktail(Long id, CocktailRq cocktailRq, List<MultipartFile> newImages) {
     Cocktail cocktail = cocktailRepository.findById(id).orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 글을 찾을 수 없습니다: " + id));
 
-    cocktail.update(cocktailRq.getTitle(), cocktailRq.getContent(), cocktailRq.getAbv());
+    cocktail.update(cocktailRq.getTitle(), cocktailRq.getIngredient(), cocktailRq.getRecipe(), cocktailRq.getAbv());
     cocktailRepository.save(cocktail);
 
     // 기존 이미지 삭제
@@ -125,6 +134,12 @@ public class CocktailServiceImpl implements CocktailService{
 
     // 글 삭제
     cocktailRepository.delete(cocktail);
+  }
+
+  @Override
+  public boolean isCocktailAuthor(Long cocktailId, Long memberId) {
+    Optional<Cocktail> optionalCocktail = cocktailRepository.findById(cocktailId);
+    return optionalCocktail.map(cocktail -> cocktail.getMember().getId().equals(memberId)).orElse(false);
   }
 
   // 검색
