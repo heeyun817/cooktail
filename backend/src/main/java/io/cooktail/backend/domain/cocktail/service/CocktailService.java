@@ -22,6 +22,8 @@ public interface CocktailService {
   Long updateCocktail(Long id, CocktailRq cocktailRq, List<MultipartFile> newImages);
   // 삭제
   void deleteCocktail(Long id);
+  // 작성자 검사
+  boolean isCocktailAuthor(Long cocktailId, Long memberId);
   // 검색
   Page<CocktailRs> search(Pageable pageable, String keyword);
 }

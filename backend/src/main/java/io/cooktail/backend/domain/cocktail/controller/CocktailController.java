@@ -5,6 +5,7 @@ import io.cooktail.backend.domain.cocktail.dto.CocktailRs;
 import io.cooktail.backend.domain.cocktail.service.CocktailService;
 import io.cooktail.backend.domain.cocktail.service.S3Uploader;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -56,13 +57,22 @@ public class CocktailController {
   @PutMapping ("/cocktails/{id}")
   public Long updateCocktail(
       @PathVariable Long id,
+      @AuthenticationPrincipal String memberId,
       @ModelAttribute CocktailRq cocktailRq,
       @RequestPart(value = "images") List<MultipartFile> images) throws IOException {
+    if (!service.isCocktailAuthor(id, Long.parseLong(memberId))) {
+      throw new AccessDeniedException("이 글을 수정할 권한이 없습니다.");
+    }
     return service.updateCocktail(id, cocktailRq, images);
   }
   // 삭제
   @DeleteMapping("/cocktails/{id}")
-  public String deleteCocktail(@PathVariable Long id) {
+  public String deleteCocktail(
+      @PathVariable Long id,
+      @AuthenticationPrincipal String memberId) throws AccessDeniedException {
+    if (!service.isCocktailAuthor(id, Long.parseLong(memberId))) {
+      throw new AccessDeniedException("이 글을 삭제할 권한이 없습니다.");
+    }
     service.deleteCocktail(id);
     return "성공적으로 삭제되었습니다";
   }

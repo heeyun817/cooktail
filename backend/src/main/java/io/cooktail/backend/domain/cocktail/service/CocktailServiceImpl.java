@@ -11,6 +11,7 @@ import io.cooktail.backend.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -132,6 +133,12 @@ public class CocktailServiceImpl implements CocktailService{
 
     // 글 삭제
     cocktailRepository.delete(cocktail);
+  }
+
+  @Override
+  public boolean isCocktailAuthor(Long cocktailId, Long memberId) {
+    Optional<Cocktail> optionalCocktail = cocktailRepository.findById(cocktailId);
+    return optionalCocktail.map(cocktail -> cocktail.getMember().getId().equals(memberId)).orElse(false);
   }
 
   // 검색
