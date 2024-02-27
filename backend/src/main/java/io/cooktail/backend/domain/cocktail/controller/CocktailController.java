@@ -77,4 +77,22 @@ public class CocktailController {
     return "성공적으로 삭제되었습니다";
   }
 
+  // 좋아요
+  @PostMapping("/cocktails/like/{id}")
+  public Long addLike(
+      @PathVariable Long id,
+      @AuthenticationPrincipal String memberId) {
+    service.addLike(id, Long.valueOf(memberId));
+    return id;
+  }
+
+  // 좋아요 해제
+  @DeleteMapping("/cocktails/like/{id}")
+  public Long deleteLike(
+      @PathVariable Long id,
+      @AuthenticationPrincipal String memberId){
+    service.deleteLike(id, Long.valueOf(memberId));
+    return id;
+  }
+
 }
