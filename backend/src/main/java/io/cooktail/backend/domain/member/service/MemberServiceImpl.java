@@ -25,8 +25,11 @@ public class MemberServiceImpl implements MemberService{
         .email(joinRq.getEmail())
         .password(passwordEncoder.encode(joinRq.getPassword()))
         .name(joinRq.getName())
+        .nickname(joinRq.getNickname())
+        .phone(joinRq.getPhone())
         .birthDate(joinRq.getBirthDate())
         .image("https://avatar.iran.liara.run/public/") //https://baconmockup.com/250/250/
+        .bio("소개글을 작성해주세요.")
         .build();
     memberRepository.save(member);
   }

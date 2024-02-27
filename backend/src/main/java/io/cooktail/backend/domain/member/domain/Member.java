@@ -33,6 +33,12 @@ public class Member {
   @Column(name = "name", nullable = false)
   private String name;
 
+  @Column(name = "nickname", nullable = false, unique = true)
+  private String nickname;
+
+  @Column(name = "phone", nullable = false)
+  private String phone;
+
   @Column(name = "image", nullable=false)
   private String image;
 
@@ -40,13 +46,19 @@ public class Member {
   @Column(name = "birth_date", nullable=false)
   private LocalDate birthDate;
 
+  @Column(name = "bio", columnDefinition = "TEXT")
+  private String bio;
+
   @Builder
-  public Member(String email, String password, String name, String image, LocalDate birthDate) {
+  public Member(String email, String password, String name, String nickname, String phone, String image, LocalDate birthDate, String bio) {
     this.email = email;
     this.password = password;
     this.name = name;
+    this.nickname = nickname;
+    this.phone = phone;
     this.image = image;
     this.birthDate = birthDate;
+    this.bio = bio;
   }
 
 }
