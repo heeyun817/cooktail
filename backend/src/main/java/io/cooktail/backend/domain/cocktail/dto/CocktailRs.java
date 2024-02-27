@@ -34,7 +34,7 @@ public class CocktailRs {
     this.createdAt = cocktail.getCreatedAt();
     this.updatedAt = cocktail.getUpdatedAt();
     this.views = cocktail.getViews();
-    this.likes = cocktail.getLikes();
+    this.likes = cocktail.getLikesCount();
     this.images = images;
   }
 }

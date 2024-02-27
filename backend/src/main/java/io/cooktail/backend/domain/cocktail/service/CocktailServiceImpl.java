@@ -2,10 +2,12 @@ package io.cooktail.backend.domain.cocktail.service;
 
 import io.cooktail.backend.domain.cocktail.domain.Cocktail;
 import io.cooktail.backend.domain.cocktail.domain.CocktailImage;
+import io.cooktail.backend.domain.cocktail.domain.CocktailLike;
 import io.cooktail.backend.domain.cocktail.dto.CocktailRq;
 import io.cooktail.backend.domain.cocktail.dto.CocktailRs;
 import io.cooktail.backend.domain.cocktail.repository.CocktailImageRepository;
 import io.cooktail.backend.domain.cocktail.repository.CocktailRepository;
+import io.cooktail.backend.domain.cocktail.repository.CocktailLikeRepository;
 import io.cooktail.backend.domain.member.domain.Member;
 import io.cooktail.backend.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
@@ -26,6 +28,7 @@ public class CocktailServiceImpl implements CocktailService{
   private final CocktailRepository cocktailRepository;
   private final CocktailImageRepository cocktailImageRepository;
   private final MemberRepository memberRepository;
+  private final CocktailLikeRepository cocktailLikeRepository;
   private final S3Uploader s3Uploader;
 
   // 전체 글 조회
@@ -136,6 +139,7 @@ public class CocktailServiceImpl implements CocktailService{
     cocktailRepository.delete(cocktail);
   }
 
+  // 작성자 검사
   @Override
   public boolean isCocktailAuthor(Long cocktailId, Long memberId) {
     Optional<Cocktail> optionalCocktail = cocktailRepository.findById(cocktailId);
@@ -155,5 +159,42 @@ public class CocktailServiceImpl implements CocktailService{
         .build());
 
     return cocktailRs;
+  }
+
+  // 좋아요
+  @Override
+  @Transactional
+  public void addLike(Long cocktailId, Long memberId) {
+    Cocktail cocktail = cocktailRepository.findById(cocktailId)
+        .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 글을 찾을 수 없습니다: " + cocktailId));
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 Member를 찾을 수 없습니다: " + memberId));
+
+    if (cocktail.getMember().equals(member)) {
+      throw new IllegalArgumentException("자신이 작성한 글에는 좋아요를 누를 수 없습니다.");
+    }
+
+    if (cocktailLikeRepository.existsByMemberAndCocktail(member, cocktail)) {
+      throw new IllegalStateException("이미 좋아요를 눌렀습니다.");
+    }
+
+    cocktailLikeRepository.save(CocktailLike.builder()
+        .member(member)
+        .cocktail(cocktail)
+        .build());
+  }
+
+  // 좋아요 해제
+  @Override
+  @Transactional
+  public void deleteLike(Long cocktailId, Long memberId) {
+    Cocktail cocktail = cocktailRepository.findById(cocktailId)
+        .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 글을 찾을 수 없습니다: " + cocktailId));
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 Member를 찾을 수 없습니다: " + memberId));
+
+    CocktailLike cocktailLike = cocktailLikeRepository.findByMemberAndCocktail(member, cocktail)
+        .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 좋아요를 찾을 수 없습니다."));
+    cocktailLikeRepository.delete(cocktailLike);
   }
 }

@@ -2,7 +2,6 @@ package io.cooktail.backend.domain.cocktail.service;
 
 import io.cooktail.backend.domain.cocktail.dto.CocktailRq;
 import io.cooktail.backend.domain.cocktail.dto.CocktailRs;
-import io.cooktail.backend.domain.member.domain.Member;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,4 +25,8 @@ public interface CocktailService {
   boolean isCocktailAuthor(Long cocktailId, Long memberId);
   // 검색
   Page<CocktailRs> search(Pageable pageable, String keyword);
+  // 좋아요
+  void addLike(Long cocktailId, Long memberId);
+  // 좋아요 해제
+  void deleteLike(Long cocktailId, Long memberId);
 }

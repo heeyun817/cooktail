@@ -63,8 +63,8 @@ public class Cocktail {
   @Column(name = "views",columnDefinition = "integer default 0", nullable = false)
   private int views;
   // 좋아요수
-  @Column(name = "likes",columnDefinition = "integer default 0", nullable = false)
-  private int likes;
+  @OneToMany(mappedBy = "cocktail")
+  private List<CocktailLike> likes = new ArrayList<>();
 
   @Builder
   public Cocktail(String title, String ingredient, String recipe, double abv, Member member) {
@@ -80,6 +80,10 @@ public class Cocktail {
     this.ingredient = ingredient;
     this.recipe = recipe;
     this.abv = abv;
+  }
+
+  public int getLikesCount() {
+    return likes.size();
   }
 
 }
