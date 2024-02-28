@@ -32,4 +32,9 @@ public interface CookService {
 
     // 검색
     Page<CookRs> search(Pageable pageable, String keyword);
+
+    void addLike(Long cookId, Long memberId);
+    // 좋아요 해제
+    void deleteLike(Long cookId, Long memberId);
+
 }

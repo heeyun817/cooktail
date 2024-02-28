@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +20,6 @@ public class CookController {
 
     private final CookService service;
     private final S3Uploader s3Uploader;
-
     // 모든 글 조회, 검색
     @GetMapping("/cooks")
     public Page<CookRs> getAllCook(
@@ -66,4 +66,25 @@ public class CookController {
         service.deleteCook(id);
         return "성공적으로 삭제되었습니다";
     }
+
+
+    // 좋아요
+    @PostMapping("/cooks/like/{id}")
+    public Long addLike(
+            @PathVariable Long id,
+            @AuthenticationPrincipal String memberId) {
+        service.addLike(id, Long.valueOf(memberId));
+        return id;
+    }
+
+    // 좋아요 해제
+    @DeleteMapping("/cooks/like/{id}")
+    public Long deleteLike(
+            @PathVariable Long id,
+            @AuthenticationPrincipal String memberId){
+        service.deleteLike(id, Long.valueOf(memberId));
+        return id;
+    }
+
+
 }
