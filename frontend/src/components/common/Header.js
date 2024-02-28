@@ -2,12 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+// 로고 이미지 import
+import logoImage from '../../assets/images/logo.png';
+
 const Header = () => {
   const isLoggedIn = false; // 로그인 상태 여부
 
   return (
     <HeaderContainer>
-      <Logo>COOKTAIL</Logo>
+      <Logo src={logoImage} alt="COOKTAIL Logo" />
       <Navigation>
         <ul>
           <NavItem><Link to="/cocktails">칵테일 레시피</Link></NavItem>
@@ -34,17 +37,14 @@ const HeaderContainer = styled.header`
   background-color: #fff;
 `;
 
-const Logo = styled.div`
-  height: 25px;
-  font-size: 20px;
-  color: #C8256A;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
+const Logo = styled.img`
+  height: 55px;
+  margin-right: 10px;
 `;
 
 const Navigation = styled.nav`
-margin-left: auto;
+  margin-left: auto;
+
   ul {
     list-style: none;
     display: flex;
