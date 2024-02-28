@@ -74,6 +74,7 @@ public class MemberServiceImpl implements MemberService{
         .build();
   }
 
+  // 내 정보 수정
   @Transactional
   @Override
   public Long changeMyInfo(long memberId, MyInfoRq myInfoRq, MultipartFile image) {
@@ -93,6 +94,25 @@ public class MemberServiceImpl implements MemberService{
       throw new RuntimeException("이미지 업로드에 실패했습니다.", e);
     }
     return memberId;
+  }
+
+  // 비밀번호 확인
+  @Override
+  public boolean checkCurrentPassword(long memberId, String currentPassword) {
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원 ID입니다: " + memberId));
+    return passwordEncoder.matches(currentPassword, member.getPassword());
+  }
+
+  // 비밀번호 변경
+  @Transactional
+  @Override
+  public void changePassword(long memberId, String newPassword) {
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원 ID입니다: " + memberId));
+
+    member.update(passwordEncoder.encode(newPassword));
+    memberRepository.save(member);
   }
 
 }

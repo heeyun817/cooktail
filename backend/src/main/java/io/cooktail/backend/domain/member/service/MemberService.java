@@ -19,4 +19,10 @@ public interface MemberService {
 
   // 내 정보 수정
   Long changeMyInfo(long memberId, MyInfoRq myInfoRq, MultipartFile image);
+
+  // 비밀번호 확인
+  boolean checkCurrentPassword(long memberId, String currentPassword);
+
+  // 비밀번호 변경
+  void changePassword(long memberId, String newPassword);
 }

@@ -70,4 +70,8 @@ public class Member {
     this.birthDate = birthDate;
     this.bio = bio;
   }
+  public void update(String password) {
+    this.password = password;
+  }
+
 }
