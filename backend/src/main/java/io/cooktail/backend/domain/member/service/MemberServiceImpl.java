@@ -21,6 +21,9 @@ public class MemberServiceImpl implements MemberService{
     if (memberRepository.existsByEmail(joinRq.getEmail())) {
       throw new RuntimeException("중복된 이메일입니다.");
     }
+    if (memberRepository.existsByNickname(joinRq.getNickname())) {
+      throw new RuntimeException("중복된 닉네임입니다.");
+    }
     Member member = Member.builder()
         .email(joinRq.getEmail())
         .password(passwordEncoder.encode(joinRq.getPassword()))
