@@ -2,13 +2,18 @@ package io.cooktail.backend.domain.cook.service;
 
 import io.cooktail.backend.domain.cook.domain.Cook;
 import io.cooktail.backend.domain.cook.domain.CookImage;
+import io.cooktail.backend.domain.cook.domain.CookLike;
 import io.cooktail.backend.domain.cook.dto.CookRq;
 import io.cooktail.backend.domain.cook.dto.CookRs;
 import io.cooktail.backend.domain.cook.repository.CookImageRepository;
 import io.cooktail.backend.domain.cook.repository.CookRepository;
+import io.cooktail.backend.domain.cook.repository.CookLikeRepository;
+import io.cooktail.backend.domain.member.domain.Member;
+import io.cooktail.backend.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,14 +21,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import io.cooktail.backend.domain.cocktail.service.S3Uploader;
+
 @Service
 @RequiredArgsConstructor
 public class CookServiceImpl implements CookService {
 
     private final CookRepository cookRepository;
     private final CookImageRepository cookImageRepository;
+    private final MemberRepository memberRepository;
+    private final CookLikeRepository cookLikeRepository;
     private final S3Uploader s3Uploader;
 
+    // 전체 글 조회
     @Override
     public Page<CookRs> findAll(Pageable pageable) {
         Page<Cook> cookPage = cookRepository.findAll(pageable);
@@ -38,6 +47,7 @@ public class CookServiceImpl implements CookService {
         return cookRs;
     }
 
+    // 게시글 id별 조회
     @Override
     public CookRs findById(Long id) {
         Cook cook = cookRepository.findById(id)
@@ -53,15 +63,21 @@ public class CookServiceImpl implements CookService {
         return cookRs;
     }
 
+    // 조회수 증가
     @Override
     @Transactional
-    public int updateView(Long id) {
+    public int updateView(Long id){
         return cookRepository.updateView(id);
     }
 
+    // 글 작성
     @Override
     @Transactional
-    public Long createCook(long member, CookRq cookRq, List<String> imageUrls) {
+    public Long createCook(Long memberId, CookRq cookRq, List<String> imageUrls) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 Member를 찾을 수 없습니다: " + memberId));
+
         Cook cook = cookRepository.save(Cook.builder()
                 .title(cookRq.getTitle())
                 .recipe(cookRq.getRecipe())
@@ -78,6 +94,7 @@ public class CookServiceImpl implements CookService {
         return cook.getId();
     }
 
+    // 글 수정
     @Override
     @Transactional
     public Long updateCook(Long id, CookRq cookRq, List<MultipartFile> newImages) {
@@ -105,8 +122,9 @@ public class CookServiceImpl implements CookService {
         return id;
     }
 
-    @Override
+    // 삭제
     @Transactional
+    @Override
     public void deleteCook(Long id) {
         Cook cook = cookRepository.findById(id).orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 글을 찾을 수 없습니다: " + id));
 
@@ -121,9 +139,17 @@ public class CookServiceImpl implements CookService {
         cookRepository.delete(cook);
     }
 
+    // 작성자 검사
+    @Override
+    public boolean isCookAuthor(Long cookId, Long memberId) {
+        Optional<Cook> optionalCook = cookRepository.findById(cookId);
+        return optionalCook.map(cook -> cook.getMember().getId().equals(memberId)).orElse(false);
+    }
+
+    // 검색
     @Override
     public Page<CookRs> search(Pageable pageable, String keyword) {
-        Page<Cook> cookPage = cookRepository.findByTitleContaining(keyword, pageable);
+        Page<Cook> cookPage = cookRepository.findByTitleContaining(keyword,pageable);
 
         Page<CookRs> cookRs = cookPage.map(cook -> CookRs.builder()
                 .cook(cook)
@@ -133,5 +159,42 @@ public class CookServiceImpl implements CookService {
                 .build());
 
         return cookRs;
+    }
+
+    // 좋아요
+    @Override
+    @Transactional
+    public void addLike(Long cookId, Long memberId) {
+        Cook cook = cookRepository.findById(cookId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 글을 찾을 수 없습니다: " + cookId));
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 Member를 찾을 수 없습니다: " + memberId));
+
+        if (cook.getMember().equals(member)) {
+            throw new IllegalArgumentException("자신이 작성한 글에는 좋아요를 누를 수 없습니다.");
+        }
+
+        if (cookLikeRepository.existsByMemberAndCook(member, cook)) {
+            throw new IllegalStateException("이미 좋아요를 눌렀습니다.");
+        }
+
+        cookLikeRepository.save(CookLike.builder()
+                .member(member)
+                .cook(cook)
+                .build());
+    }
+
+    // 좋아요 해제
+    @Override
+    @Transactional
+    public void deleteLike(Long cookId, Long memberId) {
+        Cook cook = cookRepository.findById(cookId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 글을 찾을 수 없습니다: " + cookId));
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 Member를 찾을 수 없습니다: " + memberId));
+
+        CookLike cookLike = cookLikeRepository.findByMemberAndCook(member, cook)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 좋아요를 찾을 수 없습니다."));
+        cookLikeRepository.delete(cookLike);
     }
 }

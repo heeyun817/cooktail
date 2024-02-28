@@ -3,6 +3,8 @@ package io.cooktail.backend.domain.cook.dto;
 import io.cooktail.backend.domain.cook.domain.Cook;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import io.cooktail.backend.domain.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +15,8 @@ public class CookRs {
     private long id;
     private String title;
     private String recipe;
-    private String difficulty;
-    private long member;
+    private int difficulty;
+    private Member member;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private int views;
@@ -31,7 +33,7 @@ public class CookRs {
         this.createdAt = cook.getCreatedAt();
         this.updatedAt = cook.getUpdatedAt();
         this.views = cook.getViews();
-        this.likes = cook.getLikes();
+        this.likes = cook.getLikesCount();
         this.images = images;
     }
 }

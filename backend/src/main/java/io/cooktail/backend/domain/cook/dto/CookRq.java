@@ -10,10 +10,10 @@ public class CookRq {
 
     private String title;
     private String recipe;
-    private String difficulty;
+    private int difficulty;
 
     @Builder
-    public CookRq(String title, String recipe, String difficulty) {
+    public CookRq(String title, String recipe, int difficulty) {
         this.title = title;
         this.recipe = recipe;
         this.difficulty = difficulty;
