@@ -76,4 +76,26 @@ public class S3Uploader {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "S3 이미지 키 추출 중 오류가 발생했습니다. 이미지 URL: " + imageUrl, e);
     }
   }
+
+  public String uploadFile(String dirName, MultipartFile multipartFile) {
+    if (multipartFile.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "빈 파일은 업로드할 수 없습니다.");
+    }
+
+    String uploadFileUrl = "";
+
+    ObjectMetadata objectMetadata = new ObjectMetadata();
+    objectMetadata.setContentLength(multipartFile.getSize());
+    objectMetadata.setContentType(multipartFile.getContentType());
+
+    try (InputStream inputStream = multipartFile.getInputStream()) {
+      String key = dirName + "/" + UUID.randomUUID() + "." + multipartFile.getOriginalFilename();
+      amazonS3Client.putObject(new PutObjectRequest(bucket, key, inputStream, objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+      uploadFileUrl = amazonS3Client.getUrl(bucket, key).toString();
+    } catch (IOException e) {
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+    }
+
+    return uploadFileUrl;
+  }
 }

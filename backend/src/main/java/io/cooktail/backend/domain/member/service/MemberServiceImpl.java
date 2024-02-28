@@ -1,13 +1,20 @@
 package io.cooktail.backend.domain.member.service;
 
+import io.cooktail.backend.domain.cocktail.domain.CocktailImage;
+import io.cooktail.backend.domain.cocktail.service.S3Uploader;
 import io.cooktail.backend.domain.member.domain.Member;
 import io.cooktail.backend.domain.member.dto.JoinRq;
+import io.cooktail.backend.domain.member.dto.MyInfoRq;
 import io.cooktail.backend.domain.member.dto.MyInfoRs;
 import io.cooktail.backend.domain.member.repository.MemberRepository;
+import jakarta.transaction.Transactional;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -15,8 +22,12 @@ public class MemberServiceImpl implements MemberService{
 
   private final MemberRepository memberRepository;
   private final PasswordEncoder passwordEncoder;
+  private final S3Uploader s3Uploader;
+
+  private static final String DEFAULT_PROFILE_IMAGE_URL = "https://avatar.iran.liara.run/public/"; //https://baconmockup.com/250/250/
 
   //회원가입 TODO : 이미지 링크 바꾸기
+  @Transactional
   @Override
   public void create(JoinRq joinRq)  {
 
@@ -33,7 +44,7 @@ public class MemberServiceImpl implements MemberService{
         .nickname(joinRq.getNickname())
         .phone(joinRq.getPhone())
         .birthDate(joinRq.getBirthDate())
-        .image("https://avatar.iran.liara.run/public/") //https://baconmockup.com/250/250/
+        .image(DEFAULT_PROFILE_IMAGE_URL)
         .bio("소개글을 작성해주세요.")
         .build();
     memberRepository.save(member);
@@ -63,5 +74,25 @@ public class MemberServiceImpl implements MemberService{
         .build();
   }
 
+  @Transactional
+  @Override
+  public Long changeMyInfo(long memberId, MyInfoRq myInfoRq, MultipartFile image) {
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원 ID입니다: " + memberId));
+
+    String oldImageUrl = member.getImage();
+    // 새 이미지 업로드 및 연결
+    String dirName = "member";
+    try {
+      String newImageUrl = s3Uploader.uploadFile(dirName, image);
+      member.update(myInfoRq.getName(), myInfoRq.getNickname(), myInfoRq.getPhone(), newImageUrl, myInfoRq.getBirthDate(), member.getBio());
+      if (!oldImageUrl.equals(DEFAULT_PROFILE_IMAGE_URL)) {
+        s3Uploader.deleteFile(oldImageUrl);
+      }
+    } catch (Exception e) {
+      throw new RuntimeException("이미지 업로드에 실패했습니다.", e);
+    }
+    return memberId;
+  }
 
 }

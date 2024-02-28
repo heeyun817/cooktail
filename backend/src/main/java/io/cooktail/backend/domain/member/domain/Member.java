@@ -61,4 +61,13 @@ public class Member {
     this.bio = bio;
   }
 
+  public void update(String name, String nickname, String phone, String image, LocalDate birthDate,
+      String bio) {
+    this.name = name;
+    this.nickname = nickname;
+    this.phone = phone;
+    this.image = image;
+    this.birthDate = birthDate;
+    this.bio = bio;
+  }
 }
