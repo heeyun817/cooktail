@@ -2,7 +2,9 @@ package io.cooktail.backend.domain.member.service;
 
 import io.cooktail.backend.domain.member.domain.Member;
 import io.cooktail.backend.domain.member.dto.JoinRq;
+import io.cooktail.backend.domain.member.dto.MyInfoRs;
 import io.cooktail.backend.domain.member.repository.MemberRepository;
+import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,4 +46,22 @@ public class MemberServiceImpl implements MemberService{
         .filter(member -> passwordEncoder.matches(password, member.getPassword()))
         .orElse(null);
   }
+
+  // 내 정보 조회
+  @Override
+  public MyInfoRs getMyInfo(long memberId) {
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 Member를 찾을 수 없습니다: " + memberId));
+    return MyInfoRs.builder()
+        .email(member.getEmail())
+        .name(member.getName())
+        .nickname(member.getNickname())
+        .phone(member.getPhone())
+        .birthDate(member.getBirthDate())
+        .image(member.getImage())
+        .bio(member.getBio())
+        .build();
+  }
+
+
 }
