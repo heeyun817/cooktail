@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -101,10 +102,17 @@ public class CocktailController {
     return id;
   }
 
-  // 좋아요한 리뷰 조회
+  // 좋아요한 글 조회
   @GetMapping("/cocktails/like")
-  public List<CocktailRs> getLikedCocktail(@AuthenticationPrincipal String memberId) {
-    return service.findLikedCocktail(Long.valueOf(memberId));
+  public ResponseEntity<List<CocktailRs>> getLikedCocktail(@AuthenticationPrincipal String memberId) {
+    List<CocktailRs> cocktailRs = service.findLikedCocktail(Long.valueOf(memberId));
+    return ResponseEntity.ok(cocktailRs);
+  }
+  // 본인이 작성한 글 조회
+  @GetMapping("/cocktails/me")
+  public ResponseEntity<List<CocktailRs>> getMemberCocktails(@AuthenticationPrincipal String memberId) {
+    List<CocktailRs> memberCocktails = service.findMemberCocktails(Long.valueOf(memberId));
+    return ResponseEntity.ok(memberCocktails);
   }
 
 }

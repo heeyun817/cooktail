@@ -1,6 +1,8 @@
 package io.cooktail.backend.domain.cocktail.repository;
 
 import io.cooktail.backend.domain.cocktail.domain.Cocktail;
+import io.cooktail.backend.domain.member.domain.Member;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +19,6 @@ public interface CocktailRepository extends JpaRepository<Cocktail, Long> {
 
   // 검색
   Page<Cocktail> findByTitleContaining(String keyword, Pageable pageable);
+
+  List<Cocktail> findByMemberOrderByCreatedAtDesc(Member member);
 }

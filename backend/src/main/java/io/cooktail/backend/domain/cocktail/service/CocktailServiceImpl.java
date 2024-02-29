@@ -11,6 +11,7 @@ import io.cooktail.backend.domain.cocktail.repository.CocktailLikeRepository;
 import io.cooktail.backend.domain.member.domain.Member;
 import io.cooktail.backend.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -206,8 +207,29 @@ public class CocktailServiceImpl implements CocktailService{
 
     List<CocktailLike> likedCocktailLikes = cocktailLikeRepository.findByMember(member);
 
-    return likedCocktailLikes.stream()
+    List<CocktailRs> likedCocktails = likedCocktailLikes.stream()
         .map(CocktailLike::getCocktail)
+        .sorted(Comparator.comparing(Cocktail::getCreatedAt).reversed()) // 최신순 정렬
+        .map(cocktail -> CocktailRs.builder()
+            .cocktail(cocktail)
+            .images(cocktail.getCocktailImages().stream()
+                .map(CocktailImage::getImageUrl)
+                .collect(Collectors.toList()))
+            .build())
+        .collect(Collectors.toList());
+
+    return likedCocktails;
+  }
+
+  // 본인이 작성한 글 조회
+  @Override
+  public List<CocktailRs> findMemberCocktails(Long memberId) {
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 Member를 찾을 수 없습니다: " + memberId));
+
+    List<Cocktail> memberCocktails = cocktailRepository.findByMemberOrderByCreatedAtDesc(member);
+
+    return memberCocktails.stream()
         .map(cocktail -> CocktailRs.builder()
             .cocktail(cocktail)
             .images(cocktail.getCocktailImages().stream()
