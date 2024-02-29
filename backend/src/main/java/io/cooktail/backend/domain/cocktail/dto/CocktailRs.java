@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class CocktailRs {
   private long id;
   private String title;
+  private String description;
   private String ingredient;
   private String recipe;
   private double abv;
@@ -27,6 +28,7 @@ public class CocktailRs {
   public CocktailRs(Cocktail cocktail, List<String> images) {
     this.id = cocktail.getId();
     this.title = cocktail.getTitle();
+    this.description = cocktail.getDescription();
     this.ingredient = cocktail.getIngredient();
     this.recipe = cocktail.getRecipe();
     this.abv = cocktail.getAbv();

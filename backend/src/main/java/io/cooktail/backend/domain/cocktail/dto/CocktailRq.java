@@ -9,13 +9,15 @@ import lombok.NoArgsConstructor;
 public class CocktailRq {
 
   private String title;
+  private String description;
   private String ingredient;
   private String recipe;
   private double abv;
 
   @Builder
-  public CocktailRq(String title, String ingredient, String recipe, double abv) {
+  public CocktailRq(String title, String description, String ingredient, String recipe, double abv) {
     this.title = title;
+    this.description = description;
     this.ingredient = ingredient;
     this.recipe = recipe;
     this.abv = abv;
