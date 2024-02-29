@@ -10,7 +10,9 @@ const Header = () => {
 
   return (
     <HeaderContainer>
-      <Logo src={logoImage} alt="COOKTAIL Logo" />
+      <Link to="/">
+        <Logo src={logoImage} alt="COOKTAIL Logo" />
+      </Link>
       <Navigation>
         <ul>
           <NavItem><Link to="/cocktails">칵테일 레시피</Link></NavItem>
