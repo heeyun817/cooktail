@@ -81,6 +81,7 @@ public class CocktailServiceImpl implements CocktailService{
 
     Cocktail cocktail = cocktailRepository.save(Cocktail.builder()
         .title(cocktailRq.getTitle())
+        .description(cocktailRq.getDescription())
         .ingredient(cocktailRq.getIngredient())
         .recipe(cocktailRq.getRecipe())
         .abv(cocktailRq.getAbv())
@@ -102,7 +103,7 @@ public class CocktailServiceImpl implements CocktailService{
   public Long updateCocktail(Long id, CocktailRq cocktailRq, List<MultipartFile> newImages) {
     Cocktail cocktail = cocktailRepository.findById(id).orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 글을 찾을 수 없습니다: " + id));
 
-    cocktail.update(cocktailRq.getTitle(), cocktailRq.getIngredient(), cocktailRq.getRecipe(), cocktailRq.getAbv());
+    cocktail.update(cocktailRq.getTitle(), cocktailRq.getDescription(), cocktailRq.getIngredient(), cocktailRq.getRecipe(), cocktailRq.getAbv());
     cocktailRepository.save(cocktail);
 
     // 기존 이미지 삭제
