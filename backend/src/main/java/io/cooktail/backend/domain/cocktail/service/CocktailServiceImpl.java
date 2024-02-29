@@ -14,6 +14,7 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -197,4 +198,23 @@ public class CocktailServiceImpl implements CocktailService{
         .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 좋아요를 찾을 수 없습니다."));
     cocktailLikeRepository.delete(cocktailLike);
   }
+  // 좋아요한 글 조회
+  @Override
+  public List<CocktailRs> findLikedCocktail(Long memberId) {
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 Member를 찾을 수 없습니다: " + memberId));
+
+    List<CocktailLike> likedCocktailLikes = cocktailLikeRepository.findByMember(member);
+
+    return likedCocktailLikes.stream()
+        .map(CocktailLike::getCocktail)
+        .map(cocktail -> CocktailRs.builder()
+            .cocktail(cocktail)
+            .images(cocktail.getCocktailImages().stream()
+                .map(CocktailImage::getImageUrl)
+                .collect(Collectors.toList()))
+            .build())
+        .collect(Collectors.toList());
+  }
+
 }

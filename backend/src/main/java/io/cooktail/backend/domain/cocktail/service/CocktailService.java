@@ -29,4 +29,6 @@ public interface CocktailService {
   void addLike(Long cocktailId, Long memberId);
   // 좋아요 해제
   void deleteLike(Long cocktailId, Long memberId);
+  // 좋아요한 글 조회
+  List<CocktailRs> findLikedCocktail(Long memberId);
 }

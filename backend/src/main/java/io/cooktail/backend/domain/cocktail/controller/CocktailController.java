@@ -101,4 +101,10 @@ public class CocktailController {
     return id;
   }
 
+  // 좋아요한 리뷰 조회
+  @GetMapping("/cocktails/like")
+  public List<CocktailRs> getLikedCocktail(@AuthenticationPrincipal String memberId) {
+    return service.findLikedCocktail(Long.valueOf(memberId));
+  }
+
 }
