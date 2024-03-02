@@ -9,9 +9,14 @@ const api = axios.create({
   },
 });
 
-export const getAllCocktails = async () => {
+export const getAllCocktails = async ({ sortBy = null } = {}) => {
   try {
-    const response = await api.get('/cocktails');
+    const response = await api.get('/cocktails', {
+      params: {
+        ...(sortBy !== null && { sort: sortBy })
+      },
+      withCredentials: true,
+    });
     return response.data;
   } catch (error) {
     throw new Error(`Error fetching cocktails: ${error.message}`);

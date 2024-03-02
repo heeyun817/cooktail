@@ -7,11 +7,13 @@ import { getAllCocktails } from '../api/Cocktail';
 
 const CocktailListPage = () => {
   const [cocktails, setCocktails] = useState([]);
+  const [sortOption, setSortOption] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
+      let data;
       try {
-        const data = await getAllCocktails();
+        data = await getAllCocktails({ sortBy: sortOption });
         setCocktails(data.content || []); 
       } catch (error) {
         console.error('Error fetching cocktails:', error.message);
@@ -19,13 +21,19 @@ const CocktailListPage = () => {
     };
 
     fetchData();
-  }, []);
+  }, [sortOption]);
+
+  const handleSortClick = (sortOption) => {
+    setSortOption(sortOption);
+  };
 
   return (
     <>
       <Header />
       <BoardTitle>칵테일 레시피</BoardTitle>
-      <CocktailList cocktails={cocktails} />
+      <CocktailList
+        cocktails={cocktails}
+        onSortClick={handleSortClick} />
       <Footer />
     </>
   );

@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import CocktailItem from './CocktailItem';
+import SortingOptions from './SortingOptions';
 
-const CocktailList = ({ cocktails }) => {
+const CocktailList = ({ cocktails, onSortClick }) => {
   return (
     <ListContainer>
       <SearchContainer>
@@ -10,6 +11,7 @@ const CocktailList = ({ cocktails }) => {
         <SearchButton>검색</SearchButton>
         <WriteButton>글쓰기</WriteButton>
       </SearchContainer>
+      <SortingOptions onSortClick={onSortClick} />
       <List>
         {cocktails.map((cocktails) => (
           <CocktailItem key={cocktails.id} cocktails={cocktails} />
