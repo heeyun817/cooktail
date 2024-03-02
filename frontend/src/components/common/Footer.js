@@ -20,10 +20,10 @@ const Footer = () => {
 const FooterContainer = styled.footer`
   padding: 10px;
   text-align: center;
-  position: fixed;
-  bottom: 0;
   width: 100%;
+  margin-top: auto; /* Push the footer to the bottom */
 `;
+
 
 const Logo = styled.img`
   height: 40px; // 로고 높이 설정
