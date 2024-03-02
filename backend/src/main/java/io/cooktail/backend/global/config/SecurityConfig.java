@@ -12,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -27,6 +29,18 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth.requestMatchers("/**").permitAll())
         .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
+  }
+
+  @Bean
+  public WebMvcConfigurer corsConfigurer() {
+    return new WebMvcConfigurer() {
+      public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+            .allowedMethods("*")
+            .allowedOrigins("http://localhost:3000")
+            .allowCredentials(true);
+      }
+    };
   }
 
   @Bean
