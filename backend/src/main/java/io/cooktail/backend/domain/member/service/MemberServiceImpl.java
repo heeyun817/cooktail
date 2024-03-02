@@ -6,6 +6,7 @@ import io.cooktail.backend.domain.member.domain.Member;
 import io.cooktail.backend.domain.member.dto.JoinRq;
 import io.cooktail.backend.domain.member.dto.MyInfoRq;
 import io.cooktail.backend.domain.member.dto.MyInfoRs;
+import io.cooktail.backend.domain.member.dto.ProfileRs;
 import io.cooktail.backend.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
@@ -115,4 +116,16 @@ public class MemberServiceImpl implements MemberService{
     memberRepository.save(member);
   }
 
+  @Override
+  public ProfileRs findById(Long id) {
+    Member member = memberRepository.findById(id)
+        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원 ID입니다: " + id));
+    return ProfileRs.builder()
+        .email(member.getEmail())
+        .nickname(member.getNickname())
+        .birthDate(member.getBirthDate())
+        .image(member.getImage())
+        .bio(member.getBio())
+        .build();
+  }
 }

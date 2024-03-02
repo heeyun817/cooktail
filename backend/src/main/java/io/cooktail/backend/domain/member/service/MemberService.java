@@ -4,6 +4,7 @@ import io.cooktail.backend.domain.member.domain.Member;
 import io.cooktail.backend.domain.member.dto.JoinRq;
 import io.cooktail.backend.domain.member.dto.MyInfoRq;
 import io.cooktail.backend.domain.member.dto.MyInfoRs;
+import io.cooktail.backend.domain.member.dto.ProfileRs;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface MemberService {
@@ -25,4 +26,6 @@ public interface MemberService {
 
   // 비밀번호 변경
   void changePassword(long memberId, String newPassword);
+  // id로 조회
+  ProfileRs findById(Long id);
 }
