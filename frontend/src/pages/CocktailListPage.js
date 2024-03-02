@@ -6,36 +6,26 @@ import CocktailList from '../components/cocktail/CocktailList';
 import { getAllCocktails } from '../api/Cocktail';
 
 const CocktailListPage = () => {
-
   const [cocktails, setCocktails] = useState([]);
-  const [sortOption, setSortOption] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let cocktailsData;
-        cocktailsData = await getAllCocktails({});
-
-          setCocktails(cocktailsData);
+        const data = await getAllCocktails();
+        setCocktails(data.content || []); 
       } catch (error) {
-        console.error('Error get cocktails:', error);
+        console.error('Error fetching cocktails:', error.message);
       }
     };
 
     fetchData();
-  }, [sortOption]);
-
-  const handleSortClick = (sortOption) => {
-    setSortOption(sortOption);
-  };
+  }, []);
 
   return (
     <>
       <Header />
       <BoardTitle>칵테일 레시피</BoardTitle>
-      <CocktailList 
-        cocktails={cocktails}
-        onSortClick={handleSortClick} />
+      <CocktailList cocktails={cocktails} />
       <Footer />
     </>
   );
@@ -46,6 +36,5 @@ const BoardTitle = styled.h1`
   text-align: center;
   margin-bottom: 50px;
 `;
-
 
 export default CocktailListPage;

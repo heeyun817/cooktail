@@ -1,14 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const CocktailItem = ({ cocktail }) => {
-  const { id, title, description, ingredient, recipe, abv, member, views, likes, images } = cocktail;
-  let { createdAt, updatedAt } = cocktail;
+const CocktailItem = ({ cocktails }) => {
+  const { id, title, description, ingredient, recipe, abv, member, views, likes, images } = cocktails;
+  let { createdAt, updatedAt } = cocktails;
   createdAt = createdAt.split('T')[0];
   updatedAt = updatedAt ? updatedAt.split('T')[0] : null;
   return (
     <ItemContainer>
-      <Image src={images} />
+      {images.length > 0 && (
+      <Image src={images[0]} alt={`Cocktail Image`} />
+    )}
       <TextContainer>
         <Title>{title}</Title>
         <Description>{description}</Description>

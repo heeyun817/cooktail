@@ -11,8 +11,8 @@ const CocktailList = ({ cocktails }) => {
         <WriteButton>글쓰기</WriteButton>
       </SearchContainer>
       <List>
-        {cocktails.map((cocktail) => (
-          <CocktailItem key={cocktail.id} cocktail={cocktail} />
+        {cocktails.map((cocktails) => (
+          <CocktailItem key={cocktails.id} cocktails={cocktails} />
         ))}
       </List>
     </ListContainer>
