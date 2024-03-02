@@ -35,6 +35,9 @@ public class Cocktail {
   // 제목
   @Column(name = "title", nullable = false)
   private String title;
+  // 설명
+  @Column(name = "description", nullable = false, columnDefinition = "TEXT")
+  private String description;
   // 재료
   @Column(name = "ingredient", nullable = false, columnDefinition = "TEXT")
   private String ingredient;
@@ -67,16 +70,18 @@ public class Cocktail {
   private List<CocktailLike> likes = new ArrayList<>();
 
   @Builder
-  public Cocktail(String title, String ingredient, String recipe, double abv, Member member) {
+  public Cocktail(String title, String description, String ingredient, String recipe, double abv, Member member) {
     this.title = title;
+    this.description = description;
     this.ingredient = ingredient;
     this.recipe = recipe;
     this.abv = abv;
     this.member = member;
   }
 
-  public void update(String title, String ingredient, String recipe, double abv) {
+  public void update(String title, String description, String ingredient, String recipe, double abv) {
     this.title = title;
+    this.description = description;
     this.ingredient = ingredient;
     this.recipe = recipe;
     this.abv = abv;
