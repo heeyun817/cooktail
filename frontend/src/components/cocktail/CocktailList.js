@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import CocktailItem from './CocktailItem';
 import SortingOptions from './SortingOptions';
 
-const CocktailList = ({ cocktails, onSortClick }) => {
+const CocktailList = ({ cocktails, onSortClick, onSearch }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearch = () => {
+    onSearch(searchTerm);
+  };
+
   return (
     <ListContainer>
       <SearchContainer>
-        <SearchBar placeholder="검색어를 입력하세요" />
-        <SearchButton>검색</SearchButton>
+        <SearchBar
+          placeholder="검색어를 입력하세요"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <SearchButton onClick={handleSearch}>검색</SearchButton>
         <WriteButton>글쓰기</WriteButton>
       </SearchContainer>
       <SortingOptions onSortClick={onSortClick} />

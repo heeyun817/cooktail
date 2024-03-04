@@ -9,13 +9,14 @@ const api = axios.create({
   },
 });
 
-export const getAllCocktails = async ({ page = 0, perPage = 8, sortBy = 'createdAt' } = {}) => {
+export const getAllCocktails = async ({ page = 0, perPage = 8, sortBy = 'createdAt', keyword } = {}) => {
   try {
     const response = await api.get('/cocktails', {
       params: {
         page,
         size: perPage,
         sort: sortBy,
+        keyword,
       },
       withCredentials: true,
     });

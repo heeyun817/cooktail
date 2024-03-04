@@ -13,6 +13,7 @@ const CocktailListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [sortOption, setSortOption] = useState(null);
+  const [searchKeyword, setSearchKeyword] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,6 +22,7 @@ const CocktailListPage = () => {
           sortBy: sortOption,
           page: currentPage - 1,
           perPage: ITEMS_PER_PAGE,
+          keyword: searchKeyword,
         });
         setCocktails(response.content || []);
         setTotalPages(response.totalPages || 1);
@@ -30,7 +32,7 @@ const CocktailListPage = () => {
     };
 
     fetchData();
-  }, [sortOption, currentPage]);
+  }, [sortOption, currentPage, searchKeyword]);
 
   const handleSortClick = (newSortOption) => {
     setSortOption(newSortOption);
@@ -41,6 +43,11 @@ const CocktailListPage = () => {
     setCurrentPage(newPage);
   };
 
+  const handleSearch = (keyword) => {
+    setSearchKeyword(keyword);
+    setCurrentPage(1);
+  };
+
   return (
     <>
       <Header />
@@ -48,6 +55,7 @@ const CocktailListPage = () => {
       <CocktailList
         cocktails={cocktails}
         onSortClick={handleSortClick}
+        onSearch={handleSearch}
       />
       <PaginationContainer>
         <Pagination
