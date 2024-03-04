@@ -10,6 +10,7 @@ const Footer = () => {
       <Logo src={logoImage} alt="COOKTAIL Logo" />
       <LinksContainer>
         <PrivacyLink href="/privacy">개인정보 처리방침</PrivacyLink>
+        <TermsLink href="/terms">이용약관</TermsLink>
         <TeamLink href="/team">제작 김희윤, 김주윤</TeamLink>
       </LinksContainer>
       <Copyright>&copy; COOKTAIL. All rights reserved.</Copyright>
@@ -37,6 +38,13 @@ const LinksContainer = styled.div`
 `;
 
 const PrivacyLink = styled.a`
+  color: #555;
+  font-size: 12px;
+  text-decoration: none;
+  margin-right: 20px;
+`;
+
+const TermsLink = styled.a`
   color: #555;
   font-size: 12px;
   text-decoration: none;

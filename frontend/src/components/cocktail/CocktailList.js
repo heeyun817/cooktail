@@ -68,7 +68,7 @@ const WriteButton = styled.button`
   cursor: pointer;
 `;
 const List = styled.ul`
-  margin-top: 3px;
+  margin-top: 5px;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(4, 1fr);

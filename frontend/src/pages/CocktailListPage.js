@@ -3,28 +3,42 @@ import styled from 'styled-components';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 import CocktailList from '../components/cocktail/CocktailList';
+import Pagination from '../components/cocktail/Pagination';
 import { getAllCocktails } from '../api/Cocktail';
+
+const ITEMS_PER_PAGE = 8;
 
 const CocktailListPage = () => {
   const [cocktails, setCocktails] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [sortOption, setSortOption] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      let data;
       try {
-        data = await getAllCocktails({ sortBy: sortOption });
-        setCocktails(data.content || []); 
+        const response = await getAllCocktails({
+          sortBy: sortOption,
+          page: currentPage - 1,
+          perPage: ITEMS_PER_PAGE,
+        });
+        setCocktails(response.content || []);
+        setTotalPages(response.totalPages || 1);
       } catch (error) {
         console.error('Error fetching cocktails:', error.message);
       }
     };
 
     fetchData();
-  }, [sortOption]);
+  }, [sortOption, currentPage]);
 
-  const handleSortClick = (sortOption) => {
-    setSortOption(sortOption);
+  const handleSortClick = (newSortOption) => {
+    setSortOption(newSortOption);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
   };
 
   return (
@@ -33,7 +47,15 @@ const CocktailListPage = () => {
       <BoardTitle>칵테일 레시피</BoardTitle>
       <CocktailList
         cocktails={cocktails}
-        onSortClick={handleSortClick} />
+        onSortClick={handleSortClick}
+      />
+      <PaginationContainer>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      </PaginationContainer>
       <Footer />
     </>
   );
@@ -42,6 +64,12 @@ const CocktailListPage = () => {
 const BoardTitle = styled.h1`
   font-size: 25px;
   text-align: center;
+  margin-bottom: 50px;
+`;
+
+const PaginationContainer = styled.div`
+  text-align: center;
+  margin-top: 20px;
   margin-bottom: 50px;
 `;
 

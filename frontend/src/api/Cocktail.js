@@ -9,11 +9,13 @@ const api = axios.create({
   },
 });
 
-export const getAllCocktails = async ({ sortBy = null } = {}) => {
+export const getAllCocktails = async ({ page = 0, perPage = 8, sortBy = 'createdAt' } = {}) => {
   try {
     const response = await api.get('/cocktails', {
       params: {
-        ...(sortBy !== null && { sort: sortBy })
+        page,
+        size: perPage,
+        sort: sortBy,
       },
       withCredentials: true,
     });
