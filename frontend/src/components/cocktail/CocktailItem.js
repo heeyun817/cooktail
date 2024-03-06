@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const CocktailItem = ({ cocktails }) => {
   const { id, title, description, ingredient, recipe, abv, member, views, likes, images } = cocktails;
@@ -7,6 +8,7 @@ const CocktailItem = ({ cocktails }) => {
   createdAt = createdAt.split('T')[0];
   updatedAt = updatedAt ? updatedAt.split('T')[0] : null;
   return (
+    <StyledLink to={`/cocktails/${id}`} style={{ textDecoration: 'none' }}>
     <ItemContainer>
       {images.length > 0 && (
       <Image src={images[0]} alt={`Cocktail Image`} />
@@ -22,8 +24,18 @@ const CocktailItem = ({ cocktails }) => {
         </Info>
       </TextContainer>
     </ItemContainer>
+    </StyledLink>
   );
 };
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    color: inherit;
+  }
+`;
 
 
 const ItemContainer = styled.div`

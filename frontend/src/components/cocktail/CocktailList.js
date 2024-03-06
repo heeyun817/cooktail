@@ -10,6 +10,12 @@ const CocktailList = ({ cocktails, onSortClick, onSearch }) => {
     onSearch(searchTerm);
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   return (
     <ListContainer>
       <SearchContainer>
@@ -17,6 +23,7 @@ const CocktailList = ({ cocktails, onSortClick, onSearch }) => {
           placeholder="검색어를 입력하세요"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
         <SearchButton onClick={handleSearch}>검색</SearchButton>
         <WriteButton>글쓰기</WriteButton>
