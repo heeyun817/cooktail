@@ -2,55 +2,34 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
+import { getCocktailById } from '../api/Cocktail';
+import { useParams } from 'react-router-dom'; 
 
 const CocktailDetailPage = () => {
+  const { id } = useParams(); 
 
-  const cocktailData = {
-    "id": 1,
-    "title": "아주멋진칵텔",
-    "description": "클래식 칵테일인 올드패션드입니다 도수가 조금 쌔긴 하지만 향긋하며 맛있는 칵테일 입니다",
-    "ingredient": "보드카 30ml\n말리부 코코넛 럼 30ml\n복숭아 리큐르 45ml\n얼음 5개토닉워터 200ml",
-    "recipe": "1. 롱 드링크잔에 얼음을 담아주세요.\n 2.보드카 30ml를 부어주세요",
-    "abv": 2.5,
-    "member": {
-      "id": 1,
-      "email": "test@email.com",
-      "password": "$2a$10$25jrtytapLmpsK3w83z78uhXN0I.malSwKaSQ.Pi.VOTksrk.FLry",
-      "name": "John Doe",
-      "nickname": "johnny",
-      "phone": "01012345678",
-      "image": "https://avatar.iran.liara.run/public/",
-      "birthDate": "1990-01-01",
-      "bio": "소개글을 작성해주세요."
-    },
-    "createdAt": "2024-03-02",
-    "updatedAt": "2024-03-03",
-    "views": 3,
-    "likes": 0,
-    "images": [
-      "https://sw-team9.s3.ap-northeast-2.amazonaws.com/cocktail/526e447a-5cbf-41b5-8fb2-b782b1ba3dba.%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202023-08-22%20181730.png",
-      "https://sw-team9.s3.ap-northeast-2.amazonaws.com/cocktail/a371a487-a8cd-426f-9ecb-f803a1e913ab.%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202023-12-04%20153358.png",
-      "https://sw-team9.s3.ap-northeast-2.amazonaws.com/cocktail/f4ec493c-8644-4a1f-8d87-79a7ba256b13.%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202023-11-28%20152245.png",
-      "https://sw-team9.s3.ap-northeast-2.amazonaws.com/cocktail/a751a825-9086-4cc9-a5da-118910d5ac4a.%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202023-11-28%20145641.png"
-    ]
-  };
+  const [cocktail, setCocktail] = useState(null);
+  const [mainImage, setMainImage] = useState(null);
+  const [thumbnails, setThumbnails] = useState([]);
 
-  const {
-    title,
-    description,
-    ingredient,
-    recipe,
-    abv,
-    member,
-    createdAt,
-    updatedAt,
-    views,
-    likes,
-    images,
-  } = cocktailData;
-  
-  const [mainImage, setMainImage] = useState(images[0]);
-  const [thumbnails, setThumbnails] = useState(images.slice(1));
+  useEffect(() => {
+    const fetchCocktail = async () => {
+      try {
+        const cocktailData = await getCocktailById(id);
+        setCocktail(cocktailData);
+        setMainImage(cocktailData.images[0]);
+        setThumbnails(cocktailData.images.slice(1));
+      } catch (error) {
+        console.error('Error fetching cocktail:', error);
+      }
+    };
+
+    fetchCocktail();
+  }, [id]);
+
+  if (!cocktail) {
+    return <div>Loading...</div>;
+  }
 
   const handleThumbnailClick = (clickedImage) => {
     setThumbnails((prevThumbnails) => {
@@ -60,11 +39,15 @@ const CocktailDetailPage = () => {
     });
   };
 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateString).toLocaleString('ko-KR', options);
+  };
 
   return (
     <>
       <Header />
-      <BoardTitle>{title}</BoardTitle>
+      <BoardTitle>{cocktail.title}</BoardTitle>
       <Container>
         <ImagesContainer>
         <MainImage src={mainImage} alt="Main Cocktail Image" />
@@ -82,29 +65,29 @@ const CocktailDetailPage = () => {
         <ExplainContainer>
         <InfoContainer>
         <Info>
-        <User>{member.nickname}님의 레시피</User>
-        <Abv>도수 : {abv}</Abv>
-        <Like>좋아요 {likes}</Like>
-        <View>조회수 {views}</View>
+        <User>{cocktail.member.nickname}님의 레시피</User>
+        <Abv>도수 : {cocktail.abv}</Abv>
+        <Like>좋아요 {cocktail.likes}</Like>
+        <View>조회수 {cocktail.views}</View>
         </Info>
         <Details>
               <Section>
                 <Title>칵테일 설명</Title>
-                <Content>{description}</Content>
+                <Content>{cocktail.description}</Content>
               </Section>
               <Section>
                 <Title>재료 정보</Title>
-                <Content>{ingredient}</Content>
+                <Content>{cocktail.ingredient}</Content>
               </Section>
               <Section>
                 <Title>레시피 설명</Title>
-                <Content>{recipe}</Content>
+                <Content>{cocktail.recipe}</Content>
               </Section>
             </Details>
           </InfoContainer>
           <DateContainer>
-            <DateSpan>작성일: {createdAt}</DateSpan>
-            {createdAt !== updatedAt &&<DateSpan>수정일: {updatedAt}</DateSpan>}
+            <DateSpan>작성일: {formatDate(cocktail.createdAt)}</DateSpan>
+            {cocktail.createdAt !== cocktail.updatedAt &&<DateSpan>수정일: {formatDate(cocktail.updatedAt)}</DateSpan>}
           </DateContainer>
       </ExplainContainer>
       </Container>
