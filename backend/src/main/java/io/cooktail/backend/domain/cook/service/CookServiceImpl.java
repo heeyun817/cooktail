@@ -11,6 +11,8 @@ import io.cooktail.backend.domain.cook.repository.CookLikeRepository;
 import io.cooktail.backend.domain.member.domain.Member;
 import io.cooktail.backend.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
+
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -206,8 +208,9 @@ public class CookServiceImpl implements CookService {
 
         List<CookLike> likedCookLikes = cookLikeRepository.findByMember(member);
 
-        return likedCookLikes.stream()
+        List<CookRs> likedCooks = likedCookLikes.stream()
                 .map(CookLike::getCook)
+                .sorted(Comparator.comparing(Cook::getCreatedAt).reversed()) // 최신순 정렬
                 .map(cook -> CookRs.builder()
                         .cook(cook)
                         .images(cook.getCookImages().stream()
@@ -215,6 +218,8 @@ public class CookServiceImpl implements CookService {
                                 .collect(Collectors.toList()))
                         .build())
                 .collect(Collectors.toList());
+
+        return likedCooks;
     }
 
     // 본인이 작성한 레시피 조회
