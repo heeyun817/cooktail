@@ -101,4 +101,10 @@ public class CookController {
         return id;
     }
 
+    // 좋아요한 리뷰 조회
+    @GetMapping("/cooks/like")
+    public List<CookRs> getLikedCook(@AuthenticationPrincipal String memberId) {
+        return service.findLikedCook(Long.valueOf(memberId));
+    }
+
 }
