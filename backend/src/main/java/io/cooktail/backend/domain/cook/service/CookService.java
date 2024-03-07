@@ -29,4 +29,8 @@ public interface CookService {
     void addLike(Long cookId, Long memberId);
     // 좋아요 해제
     void deleteLike(Long cookId, Long memberId);
+    // 좋아요 글 조회
+    List<CookRs> findLikedCook(Long memberId);
+    // 본인이 작성한 레시피 조회
+    List<CookRs> findMemberCooks(Long memberId);
 }
