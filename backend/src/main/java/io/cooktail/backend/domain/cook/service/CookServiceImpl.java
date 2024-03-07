@@ -216,4 +216,22 @@ public class CookServiceImpl implements CookService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    // 본인이 작성한 레시피 조회
+    @Override
+    public List<CookRs> findMemberCooks(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 Member를 찾을 수 없습니다: " + memberId));
+
+        List<Cook> memberCooks = cookRepository.findByMemberOrderByCreatedAtDesc(member);
+
+        return memberCooks.stream()
+                .map(cook -> CookRs.builder()
+                .cook(cook)
+                .images(cook.getCookImages().stream()
+                        .map(CookImage::getImageUrl)
+                        .collect(Collectors.toList()))
+                        .build())
+                .collect(Collectors.toList());
+    }
 }

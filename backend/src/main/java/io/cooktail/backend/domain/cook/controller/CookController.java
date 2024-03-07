@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -101,10 +102,17 @@ public class CookController {
         return id;
     }
 
-    // 좋아요한 리뷰 조회
+    // 좋아요한 레시피 조회
     @GetMapping("/cooks/like")
     public List<CookRs> getLikedCook(@AuthenticationPrincipal String memberId) {
         return service.findLikedCook(Long.valueOf(memberId));
+    }
+
+    // 본인이 작성한 레시피 조회
+    @GetMapping("/cook/me")
+    public ResponseEntity<List<CookRs>> getMemberCocktails(@AuthenticationPrincipal String memberId) {
+        List<CookRs> memberCooks = service.findMemberCooks(Long.valueOf(memberId));
+        return ResponseEntity.ok(memberCooks);
     }
 
 }
