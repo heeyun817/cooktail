@@ -3,7 +3,10 @@ import styled from 'styled-components';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 import { getCocktailById } from '../api/Cocktail';
-import { useParams } from 'react-router-dom'; 
+import { useParams } from 'react-router-dom';
+
+// 로고 이미지 import
+import likeIcon from '../assets/images/like.png';
 
 const CocktailDetailPage = () => {
   const { id } = useParams(); 
@@ -67,6 +70,7 @@ const CocktailDetailPage = () => {
         <Info>
         <User>{cocktail.member.nickname}님의 레시피</User>
         <Abv>도수 : {cocktail.abv}</Abv>
+        <LikeIcon src={likeIcon} alt="Like Icon" />
         <Like>좋아요 {cocktail.likes}</Like>
         <View>조회수 {cocktail.views}</View>
         </Info>
@@ -171,14 +175,13 @@ const Abv = styled.button`
 
 const Like = styled.span`
   font-size: 20px;
-  margin-left: 18px;
   padding: 8px;
   color: #C8256A;
 `;
 
 const View = styled.span`
   font-size: 20px;
-  margin-left: 18px;
+  margin-left: 5px;
   padding: 8px;
   color: #C8256A;
 `;
@@ -221,6 +224,12 @@ const DateSpan = styled.span`
   font-size: 14px;
   color: #777;
   margin-right: 10px;
+`;
+
+const LikeIcon = styled.img`
+  width: 33px;
+  height: 33px;
+  margin-left: 20px;
 `;
 
 
