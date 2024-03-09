@@ -1,12 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { logout } from '../../api/Auth';
 
-// 로고 이미지 import
 import logoImage from '../../assets/images/logo.png';
 
+// 토큰 확인 및 로그인 상태 반환 함수
+const checkLoginStatus = () => {
+  const token = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('token='))
+    ?.split('=')[1];
+
+  return !!token;
+};
+
 const Header = () => {
-  const isLoggedIn = false; // 로그인 상태 여부
+  const [isLoggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // 컴포넌트가 마운트될 때 초기 로그인 상태 확인
+    const status = checkLoginStatus();
+    setLoggedIn(status);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    setLoggedIn(false);
+  };
 
   return (
     <HeaderContainer>
@@ -22,9 +43,13 @@ const Header = () => {
       </Navigation>
       <UserActions>
         {isLoggedIn ? (
-          <button>로그아웃</button>
+          // 로그인 상태일 때는 로그아웃 버튼 표시
+          <button onClick={handleLogout}>로그아웃</button>
         ) : (
-          <button>로그인</button>
+          // 비로그인 상태일 때는 로그인 버튼 표시
+          <Link to="/login">
+            <button>로그인</button>
+          </Link>
         )}
       </UserActions>
     </HeaderContainer>
@@ -78,7 +103,7 @@ const UserActions = styled.div`
     border-radius: 10px;
     margin-left: 20px;
     display: flex;
-    align-items: center; 
+    align-items: center;
   }
 `;
 
