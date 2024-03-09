@@ -9,9 +9,12 @@ import java.nio.file.AccessDeniedException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +31,10 @@ public class CookController {
     public Page<CookRs> getAllCook(
             @PageableDefault(page = 0, size = 8, sort = "createdAt", direction = Direction.DESC) Pageable pageable,
             @RequestParam(required = false) String keyword) {
+
+        if ("like,desc".equals(pageable.getSort())) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likes.size"));
+        }
 
         if (keyword == null) {
             return service.findAll(pageable);
@@ -93,6 +100,19 @@ public class CookController {
             @AuthenticationPrincipal String memberId){
         service.deleteLike(id, Long.valueOf(memberId));
         return id;
+    }
+
+    // 좋아요한 레시피 조회
+    @GetMapping("/cooks/like")
+    public List<CookRs> getLikedCook(@AuthenticationPrincipal String memberId) {
+        return service.findLikedCook(Long.valueOf(memberId));
+    }
+
+    // 본인이 작성한 레시피 조회
+    @GetMapping("/cook/me")
+    public ResponseEntity<List<CookRs>> getMemberCocktails(@AuthenticationPrincipal String memberId) {
+        List<CookRs> memberCooks = service.findMemberCooks(Long.valueOf(memberId));
+        return ResponseEntity.ok(memberCooks);
     }
 
 }
