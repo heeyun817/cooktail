@@ -25,9 +25,15 @@ const Header = () => {
   }, []);
 
   const handleLogout = () => {
-    logout();
-    setLoggedIn(false);
-  };
+    // Display a confirmation dialog
+    const confirmLogout = window.confirm('정말 로그아웃 하시겠습니까?');
+  
+    // If the user confirms, proceed with logout
+    if (confirmLogout) {
+      logout();
+      setLoggedIn(false);
+    }
+  };  
 
   return (
     <HeaderContainer>
