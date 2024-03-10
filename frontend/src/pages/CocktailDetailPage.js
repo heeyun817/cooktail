@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
-import { getCocktailById, addLike, deleteLike } from '../api/Cocktail';
+import { getCocktailById, addLike, deleteLike, checkLikeStatus } from '../api/Cocktail';
 import { getToken } from '../api/Auth';
 import { useParams } from 'react-router-dom';
 
@@ -16,7 +16,7 @@ const CocktailDetailPage = () => {
   const [cocktail, setCocktail] = useState(null);
   const [mainImage, setMainImage] = useState(null);
   const [thumbnails, setThumbnails] = useState([]);
-  const [isLiked, setIsLiked] = useState(false);
+  const [likeStatus, setLikeStatus] = useState(false); // 좋아요 상태 추가
 
   useEffect(() => {
     const fetchCocktail = async () => {
@@ -25,7 +25,11 @@ const CocktailDetailPage = () => {
         setCocktail(cocktailData);
         setMainImage(cocktailData.images[0]);
         setThumbnails(cocktailData.images.slice(1));
-        setIsLiked(cocktailData.isLiked);
+
+        // Check the initial like status
+        const token = getToken();
+        const initialLikeStatus = await checkLikeStatus(id, token);
+        setLikeStatus(initialLikeStatus);
       } catch (error) {
         console.error('Error fetching cocktail:', error);
       }
@@ -45,20 +49,29 @@ const CocktailDetailPage = () => {
       return updatedThumbnails.filter((thumbnail) => thumbnail !== clickedImage);
     });
   };
-
+  
   const handleLikeClick = async () => {
     try {
       const token = getToken();
-      if (!isLiked) {
-        await addLike(id, token);
-      } else {
+      
+      const likeStatus = await checkLikeStatus(id, token);
+
+      if (likeStatus) {
         await deleteLike(id, token);
+      } else {
+        await addLike(id, token);
       }
-      setIsLiked(!isLiked);
+
+      const updatedCocktail = await getCocktailById(id);
+      setCocktail(updatedCocktail);
+
+      // Toggle the like status
+      setLikeStatus(!likeStatus);
     } catch (error) {
-      console.error('Error handling like:', error);
+      console.error('Error handling like click:', error);
     }
   };
+
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
@@ -88,7 +101,7 @@ const CocktailDetailPage = () => {
             <Info>
               <User>{cocktail?.member?.nickname}님의 레시피</User>
               <Abv>도수: {cocktail?.abv}</Abv>
-              <LikeIcon src={likeIcon} alt="Like Icon" onClick={handleLikeClick} style={{ cursor: 'pointer' }} />
+              <LikeIcon src={likeStatus ? likedIcon : likeIcon} alt="Like Icon" onClick={handleLikeClick} style={{ cursor: 'pointer' }} />
               <Like>좋아요 {cocktail?.likes}</Like>
               <View>조회수 {cocktail?.views}</View>
             </Info>
