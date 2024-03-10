@@ -88,11 +88,11 @@ public class CocktailController {
 
   // 좋아요
   @PostMapping("/cocktails/like/{id}")
-  public Long Like(
+  public Long addLike(
       @PathVariable Long id,
       @AuthenticationPrincipal String memberId) {
     try {
-      service.Like(id, Long.valueOf(memberId));
+      service.addLike(id, Long.valueOf(memberId));
       return id;
     } catch (Exception e) {
       log.error("Error adding like for cocktail ID {}: {}", id, e.getMessage(), e);
@@ -100,13 +100,31 @@ public class CocktailController {
     }
   }
 
+
+  // 좋아요 해제
+  @DeleteMapping("/cocktails/like/{id}")
+  public Long deleteLike(
+      @PathVariable Long id,
+      @AuthenticationPrincipal String memberId){
+    service.deleteLike(id, Long.valueOf(memberId));
+    return id;
+  }
+
+  // 좋아요 상태 확인
+  @GetMapping("/cocktails/like/{id}/status")
+  public boolean checkLikeStatus(
+      @PathVariable Long id,
+      @AuthenticationPrincipal String memberId) {
+    return service.checkLikeStatus(id, Long.valueOf(memberId));
+  }
+
+
   // 좋아요한 글 조회
   @GetMapping("/cocktails/like")
   public ResponseEntity<List<CocktailRs>> getLikedCocktail(@AuthenticationPrincipal String memberId) {
     List<CocktailRs> cocktailRs = service.findLikedCocktail(Long.valueOf(memberId));
     return ResponseEntity.ok(cocktailRs);
   }
-
   // 본인이 작성한 글 조회
   @GetMapping("/cocktails/me")
   public ResponseEntity<List<CocktailRs>> getMemberCocktails(@AuthenticationPrincipal String memberId) {
