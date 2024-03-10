@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class CocktailController {
 
   private final CocktailService service;
@@ -86,20 +88,16 @@ public class CocktailController {
 
   // 좋아요
   @PostMapping("/cocktails/like/{id}")
-  public Long addLike(
+  public Long Like(
       @PathVariable Long id,
       @AuthenticationPrincipal String memberId) {
-    service.addLike(id, Long.valueOf(memberId));
-    return id;
-  }
-
-  // 좋아요 해제
-  @DeleteMapping("/cocktails/like/{id}")
-  public Long deleteLike(
-      @PathVariable Long id,
-      @AuthenticationPrincipal String memberId){
-    service.deleteLike(id, Long.valueOf(memberId));
-    return id;
+    try {
+      service.Like(id, Long.valueOf(memberId));
+      return id;
+    } catch (Exception e) {
+      log.error("Error adding like for cocktail ID {}: {}", id, e.getMessage(), e);
+      throw new RuntimeException("Error adding like");
+    }
   }
 
   // 좋아요한 글 조회
@@ -108,6 +106,7 @@ public class CocktailController {
     List<CocktailRs> cocktailRs = service.findLikedCocktail(Long.valueOf(memberId));
     return ResponseEntity.ok(cocktailRs);
   }
+
   // 본인이 작성한 글 조회
   @GetMapping("/cocktails/me")
   public ResponseEntity<List<CocktailRs>> getMemberCocktails(@AuthenticationPrincipal String memberId) {
