@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
-import { getCocktailById } from '../api/Cocktail';
+import { getCocktailById, addLike, deleteLike } from '../api/Cocktail';
+import { getToken } from '../api/Auth';
 import { useParams } from 'react-router-dom';
 
-// 로고 이미지 import
+// 좋아요 아이콘 import
 import likeIcon from '../assets/images/like.png';
+import likedIcon from '../assets/images/liked.png';
 
 const CocktailDetailPage = () => {
   const { id } = useParams(); 
@@ -14,6 +16,7 @@ const CocktailDetailPage = () => {
   const [cocktail, setCocktail] = useState(null);
   const [mainImage, setMainImage] = useState(null);
   const [thumbnails, setThumbnails] = useState([]);
+  const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
     const fetchCocktail = async () => {
@@ -22,6 +25,7 @@ const CocktailDetailPage = () => {
         setCocktail(cocktailData);
         setMainImage(cocktailData.images[0]);
         setThumbnails(cocktailData.images.slice(1));
+        setIsLiked(cocktailData.isLiked);
       } catch (error) {
         console.error('Error fetching cocktail:', error);
       }
@@ -42,6 +46,20 @@ const CocktailDetailPage = () => {
     });
   };
 
+  const handleLikeClick = async () => {
+    try {
+      const token = getToken();
+      if (!isLiked) {
+        await addLike(id, token);
+      } else {
+        await deleteLike(id, token);
+      }
+      setIsLiked(!isLiked);
+    } catch (error) {
+      console.error('Error handling like:', error);
+    }
+  };
+
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
     return new Date(dateString).toLocaleString('ko-KR', options);
@@ -50,50 +68,52 @@ const CocktailDetailPage = () => {
   return (
     <>
       <Header />
-      <BoardTitle>{cocktail.title}</BoardTitle>
+      <BoardTitle>{cocktail?.title || 'Untitled Cocktail'}</BoardTitle>
       <Container>
         <ImagesContainer>
-        <MainImage src={mainImage} alt="Main Cocktail Image" />
+          <MainImage src={mainImage} alt="Main Cocktail Image" />
           <ThumbnailContainer>
-          {thumbnails.map((thumbnail, index) => (
-            <Thumbnail
-              key={index}
-              src={thumbnail}
-              alt={`Cocktail Thumbnail ${index + 1}`}
-              onClick={() => handleThumbnailClick(thumbnail)}
-            />
-          ))}
+            {thumbnails.map((thumbnail, index) => (
+              <Thumbnail
+                key={index}
+                src={thumbnail}
+                alt={`Cocktail Thumbnail ${index + 1}`}
+                onClick={() => handleThumbnailClick(thumbnail)}
+              />
+            ))}
           </ThumbnailContainer>
         </ImagesContainer>
         <ExplainContainer>
-        <InfoContainer>
-        <Info>
-        <User>{cocktail.member.nickname}님의 레시피</User>
-        <Abv>도수 : {cocktail.abv}</Abv>
-        <LikeIcon src={likeIcon} alt="Like Icon" />
-        <Like>좋아요 {cocktail.likes}</Like>
-        <View>조회수 {cocktail.views}</View>
-        </Info>
-        <Details>
+          <InfoContainer>
+            <Info>
+              <User>{cocktail?.member?.nickname}님의 레시피</User>
+              <Abv>도수: {cocktail?.abv}</Abv>
+              <LikeIcon src={likeIcon} alt="Like Icon" onClick={handleLikeClick} style={{ cursor: 'pointer' }} />
+              <Like>좋아요 {cocktail?.likes}</Like>
+              <View>조회수 {cocktail?.views}</View>
+            </Info>
+            <Details>
               <Section>
                 <Title>칵테일 설명</Title>
-                <Content>{cocktail.description}</Content>
+                <Content>{cocktail?.description}</Content>
               </Section>
               <Section>
                 <Title>재료 정보</Title>
-                <Content>{cocktail.ingredient}</Content>
+                <Content>{cocktail?.ingredient}</Content>
               </Section>
               <Section>
                 <Title>레시피 설명</Title>
-                <Content>{cocktail.recipe}</Content>
+                <Content>{cocktail?.recipe}</Content>
               </Section>
             </Details>
           </InfoContainer>
           <DateContainer>
-            <DateSpan>작성일: {formatDate(cocktail.createdAt)}</DateSpan>
-            {cocktail.createdAt !== cocktail.updatedAt &&<DateSpan>수정일: {formatDate(cocktail.updatedAt)}</DateSpan>}
+            <DateSpan>작성일: {formatDate(cocktail?.createdAt)}</DateSpan>
+            {cocktail?.createdAt !== cocktail?.updatedAt && (
+              <DateSpan>수정일: {formatDate(cocktail?.updatedAt)}</DateSpan>
+            )}
           </DateContainer>
-      </ExplainContainer>
+        </ExplainContainer>
       </Container>
       <Footer />
     </>
@@ -231,6 +251,7 @@ const LikeIcon = styled.img`
   height: 33px;
   margin-left: 20px;
 `;
+
 
 
 export default CocktailDetailPage;
