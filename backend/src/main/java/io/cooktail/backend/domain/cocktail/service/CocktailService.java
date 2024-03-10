@@ -26,7 +26,11 @@ public interface CocktailService {
   // 검색
   Page<CocktailRs> search(Pageable pageable, String keyword);
   // 좋아요
-  void Like(Long cocktailId, Long memberId);
+  void addLike(Long cocktailId, Long memberId);
+  // 좋아요 해제
+  void deleteLike(Long cocktailId, Long memberId);
+  // 좋아요 상태 확인
+  boolean checkLikeStatus(Long id, Long aLong);
   // 좋아요한 글 조회
   List<CocktailRs> findLikedCocktail(Long memberId);
   // 본인이 작성한 글 조회
