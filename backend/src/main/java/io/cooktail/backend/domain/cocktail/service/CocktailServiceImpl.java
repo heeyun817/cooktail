@@ -167,7 +167,7 @@ public class CocktailServiceImpl implements CocktailService{
   // 좋아요
   @Override
   @Transactional
-  public void Like(Long cocktailId, Long memberId) {
+  public void addLike(Long cocktailId, Long memberId) {
     Cocktail cocktail = cocktailRepository.findById(cocktailId)
         .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 글을 찾을 수 없습니다: " + cocktailId));
     Member member = memberRepository.findById(memberId)
@@ -177,18 +177,40 @@ public class CocktailServiceImpl implements CocktailService{
       throw new IllegalArgumentException("자신이 작성한 글에는 좋아요를 누를 수 없습니다.");
     }
 
-    Optional<CocktailLike> existingLike = cocktailLikeRepository.findByMemberAndCocktail(member, cocktail);
-
-    if (existingLike.isPresent()) {
-      // 이미 좋아요를 눌렀다면 취소
-      cocktailLikeRepository.delete(existingLike.get());
-    } else {
-      cocktailLikeRepository.save(CocktailLike.builder()
-          .member(member)
-          .cocktail(cocktail)
-          .build());
+    if (cocktailLikeRepository.existsByMemberAndCocktail(member, cocktail)) {
+      throw new IllegalStateException("이미 좋아요를 눌렀습니다.");
     }
+
+    cocktailLikeRepository.save(CocktailLike.builder()
+        .member(member)
+        .cocktail(cocktail)
+        .build());
   }
+
+  // 좋아요 해제
+  @Override
+  @Transactional
+  public void deleteLike(Long cocktailId, Long memberId) {
+    Cocktail cocktail = cocktailRepository.findById(cocktailId)
+        .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 글을 찾을 수 없습니다: " + cocktailId));
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 Member를 찾을 수 없습니다: " + memberId));
+
+    CocktailLike cocktailLike = cocktailLikeRepository.findByMemberAndCocktail(member, cocktail)
+        .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 좋아요를 찾을 수 없습니다."));
+    cocktailLikeRepository.delete(cocktailLike);
+  }
+
+  @Override
+  public boolean checkLikeStatus(Long cocktailId, Long memberId) {
+    Cocktail cocktail = cocktailRepository.findById(cocktailId)
+        .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 글을 찾을 수 없습니다: " + cocktailId));
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 Member를 찾을 수 없습니다: " + memberId));
+
+    return cocktailLikeRepository.existsByMemberAndCocktail(member, cocktail);
+  }
+
 
   // 좋아요한 글 조회
   @Override
