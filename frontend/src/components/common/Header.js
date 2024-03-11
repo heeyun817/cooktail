@@ -53,7 +53,7 @@ const Header = () => {
           <button onClick={handleLogout}>로그아웃</button>
         ) : (
           // 비로그인 상태일 때는 로그인 버튼 표시
-          <Link to="/login">
+          <Link to="/login" style={{ textDecoration: 'none' }}>
             <button>로그인</button>
           </Link>
         )}

@@ -28,6 +28,7 @@ const CocktailDetailPage = () => {
 
         // Check the initial like status
         const token = getToken();
+
         const initialLikeStatus = await checkLikeStatus(id, token);
         setLikeStatus(initialLikeStatus);
       } catch (error) {
@@ -53,6 +54,11 @@ const CocktailDetailPage = () => {
   const handleLikeClick = async () => {
     try {
       const token = getToken();
+
+      if (!token) {
+        alert('로그인이 필요합니다.');
+        return;
+      }
       
       const likeStatus = await checkLikeStatus(id, token);
 

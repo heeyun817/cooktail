@@ -10,6 +10,38 @@ const api = axios.create({
   withCredentials: true,
 });
 
+export const signUp = async (formData) => {
+  try {
+    const response = await api.post('/members', formData);
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error('회원가입 실패');
+    }
+  } catch (error) {
+    console.error('회원가입 중 에러 발생:', error.message);
+
+    if (error.response && error.response.data) {
+      const errorMessage = error.response.data.message;
+      
+      if (error.message.includes('중복된 이메일입니다.')) {
+        alert('중복된 이메일입니다. 다른 이메일을 사용해주세요.');
+      } else if (error.message.includes('중복된 닉네임입니다.')) {
+        alert('중복된 닉네임입니다. 다른 닉네임을 사용해주세요.');
+      } else {
+        alert(errorMessage);
+      }
+    } else {
+      alert('회원가입 중 오류가 발생했습니다.');
+    }
+
+    
+    
+    throw error;
+  }
+};
+
 export const login = async (email, password) => {
   try {
     const response = await api.post('/members/login', {
