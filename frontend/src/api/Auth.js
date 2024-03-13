@@ -62,6 +62,31 @@ export const login = async (email, password) => {
   }
 };
 
+// 추가된 함수
+export const getMyInfo = async () => {
+  try {
+    const token = getToken();
+    if (!token) {
+      throw new Error('로그인이 필요합니다.');
+    }
+
+    const response = await api.get('/members/me', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error('내 정보 조회 실패');
+    }
+  } catch (error) {
+    console.error('내 정보 조회 중 에러 발생:', error.message);
+    throw error;
+  }
+};
+
 // 쿠키에서 토큰을 가져오는 함수를 추가
 export const getToken = () => {
   const cookies = document.cookie.split(';');
