@@ -1,23 +1,25 @@
 import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import CocktailListPage from './pages/CocktailListPage';
+import CocktailDetailPage from './pages/CocktailDetailPage';
+import LoginPage from './pages/LoginPage';
+import SignUpPage from './pages/SignUpPage';
+import SignUpSuccess from './pages/SingUpSuccessPage';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+            <>
+                <Routes>
+                    <Route exact path="/cocktails" element={<CocktailListPage />} />
+                    <Route exact path="/cocktails/:id" element={<CocktailDetailPage />} />
+                    <Route exact path="/login" element={<LoginPage />} />
+                    <Route exact path="/signup" element={<SignUpPage />} />
+                    <Route exact path="/signup/success" element={<SignUpSuccess />} />
+                </Routes>
+            </>
+        </BrowserRouter>
     </div>
   );
 }
