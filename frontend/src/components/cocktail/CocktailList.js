@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import CocktailItem from './CocktailItem';
 import SortingOptions from './SortingOptions';
+import { useNavigate } from 'react-router-dom';
+import { getToken } from '../../api/Auth';
 
 const CocktailList = ({ cocktails, onSortClick, onSearch }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   const handleSearch = () => {
     onSearch(searchTerm);
@@ -16,6 +19,16 @@ const CocktailList = ({ cocktails, onSortClick, onSearch }) => {
     }
   };
 
+  const handleWriteClick = () => {
+    const token = getToken();
+    if (!token) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+    navigate('/cocktails/create');
+  };
+  
+
   return (
     <ListContainer>
       <SearchContainer>
@@ -26,7 +39,7 @@ const CocktailList = ({ cocktails, onSortClick, onSearch }) => {
           onKeyDown={handleKeyDown}
         />
         <SearchButton onClick={handleSearch}>검색</SearchButton>
-        <WriteButton>글쓰기</WriteButton>
+        <WriteButton onClick={handleWriteClick}>글쓰기</WriteButton>
       </SearchContainer>
       <SortingOptions onSortClick={onSortClick} />
       <List>
