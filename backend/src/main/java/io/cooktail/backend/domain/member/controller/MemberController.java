@@ -37,12 +37,8 @@ public class MemberController {
 
   @PostMapping("/members")
   public ResponseEntity<?> create(@RequestBody JoinRq joinRq) {
-    try {
       memberService.create(joinRq);
       return ResponseEntity.ok("회원가입 성공");
-    } catch (Exception e) {
-      return ResponseEntity.status(500).body("회원가입 실패: " + e.getMessage());
-    }
   }
 
   //로그인

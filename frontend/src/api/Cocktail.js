@@ -9,6 +9,35 @@ const api = axios.create({
   },
   withCredentials: true,
 });
+
+// 글 생성
+export const createCocktail = async (formData, token) => {
+  try {
+    const formDataWithImages = new FormData();
+    formDataWithImages.append('title', formData.title);
+    formDataWithImages.append('description', formData.description);
+    formDataWithImages.append('ingredient', formData.ingredient);
+    formDataWithImages.append('recipe', formData.recipe);
+    formDataWithImages.append('abv', formData.abv);
+    // 이미지 파일들을 FormData에 추가
+    formData.images.forEach((image) => {
+      formDataWithImages.append('images', image); // 수정 필요: formDataWithImages 사용
+    });
+
+    const response = await api.post('/cocktails', formDataWithImages, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // 이미지를 함께 전송할 때는 'multipart/form-data'로 설정
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(`Error creating cocktail: ${error.message}`);
+  }
+};
+
+
   // 모든 글 조회, 검색
 export const getAllCocktails = async ({ page = 0, perPage = 8, sortBy = 'createdAt', keyword } = {}) => {
   try {

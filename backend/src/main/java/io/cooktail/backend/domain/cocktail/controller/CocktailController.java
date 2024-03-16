@@ -53,13 +53,14 @@ public class CocktailController {
 
   // 작성
   @PostMapping("/cocktails")
-  public Long createCocktail(
+  public ResponseEntity<Long> createCocktail(
       @AuthenticationPrincipal String memberId,
       @ModelAttribute CocktailRq cocktailRq,
       @RequestPart(value = "images") List<MultipartFile> images) throws IOException {
     String dirName = "cocktail";
     List<String> imageUrls = s3Uploader.uploadFiles(dirName, images);
-    return service.createCocktail(Long.parseLong(memberId),cocktailRq,imageUrls);
+    Long cocktailId = service.createCocktail(Long.parseLong(memberId),cocktailRq,imageUrls);
+    return ResponseEntity.ok(cocktailId);
   }
 
   // 수정
@@ -91,13 +92,8 @@ public class CocktailController {
   public Long addLike(
       @PathVariable Long id,
       @AuthenticationPrincipal String memberId) {
-    try {
       service.addLike(id, Long.valueOf(memberId));
       return id;
-    } catch (Exception e) {
-      log.error("Error adding like for cocktail ID {}: {}", id, e.getMessage(), e);
-      throw new RuntimeException("Error adding like");
-    }
   }
 
 

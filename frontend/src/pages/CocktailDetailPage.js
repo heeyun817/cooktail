@@ -250,6 +250,7 @@ const Title = styled.h2`
 const Content = styled.p`
   font-size: 18px;
   margin-bottom: 10px;
+  white-space: pre-wrap;
 `;
 
 const DateContainer = styled.div`

@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import CocktailListPage from './pages/CocktailListPage';
 import CocktailDetailPage from './pages/CocktailDetailPage';
+import CocktailCreatePage from './pages/CocktailCreatePage';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import SignUpSuccess from './pages/SingUpSuccessPage';
@@ -14,6 +15,7 @@ function App() {
                 <Routes>
                     <Route exact path="/cocktails" element={<CocktailListPage />} />
                     <Route exact path="/cocktails/:id" element={<CocktailDetailPage />} />
+                    <Route exact path="/cocktails/create" element={<CocktailCreatePage />} />
                     <Route exact path="/login" element={<LoginPage />} />
                     <Route exact path="/signup" element={<SignUpPage />} />
                     <Route exact path="/signup/success" element={<SignUpSuccess />} />
