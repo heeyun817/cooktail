@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import Header from '../components/common/Header';
-import Footer from '../components/common/Footer';
-import { createCocktail } from '../api/Cocktail';
-import { getToken } from '../api/Auth';
+import Header from '../../components/common/Header';
+import Footer from '../../components/common/Footer';
+import { createCocktail } from '../../api/Cocktail';
+import { getToken } from '../../api/Auth';
 
 const CocktailCreatePage = () => {
   const navigate = useNavigate(); // Initialize the navigate function

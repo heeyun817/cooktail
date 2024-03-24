@@ -37,7 +37,6 @@ export const createCocktail = async (formData, token) => {
   }
 };
 
-// 글 수정
 export const updateCocktail = async (cocktailId, formData, token) => {
   try {
     const formDataWithImages = new FormData();
@@ -46,15 +45,17 @@ export const updateCocktail = async (cocktailId, formData, token) => {
     formDataWithImages.append('ingredient', formData.ingredient);
     formDataWithImages.append('recipe', formData.recipe);
     formDataWithImages.append('abv', formData.abv);
-    // 이미지 파일들을 FormData에 추가
-    formData.images.forEach((image) => {
-      formDataWithImages.append('images', image);
-    });
+    
+    // 이미지 배열이 정의되어 있는지 확인 후에 이미지를 formData에 추가
+    if (formData.images && formData.images.length > 0) {
+      formData.images.forEach((image) => {
+        formDataWithImages.append('images', image);
+      });
+    }
 
     const response = await api.put(`/cocktails/${cocktailId}`, formDataWithImages, {
       headers: {
         Authorization: `Bearer ${token}`,
-        // 이미지를 함께 전송할 때는 'multipart/form-data'로 설정
         'Content-Type': 'multipart/form-data',
       },
     });
@@ -63,6 +64,8 @@ export const updateCocktail = async (cocktailId, formData, token) => {
     throw new Error(`Error updating cocktail: ${error.message}`);
   }
 };
+
+
 
 // 글 삭제
 export const deleteCocktail = async (cocktailId, token) => {

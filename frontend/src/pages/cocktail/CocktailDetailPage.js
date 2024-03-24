@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Header from '../components/common/Header';
-import Footer from '../components/common/Footer';
-import { getCocktailById, addLike, deleteLike, checkLikeStatus, checkIsOwnCocktail, deleteCocktail } from '../api/Cocktail';
-import { getToken } from '../api/Auth';
+import Header from '../../components/common/Header';
+import Footer from '../../components/common/Footer';
+import { getCocktailById, addLike, deleteLike, checkLikeStatus, checkIsOwnCocktail, deleteCocktail } from '../../api/Cocktail';
+import { getToken } from '../../api/Auth';
 import { useParams, useNavigate } from 'react-router-dom';
 
 // 좋아요 아이콘 import
-import likeIcon from '../assets/images/like.png';
-import likedIcon from '../assets/images/liked.png';
+import likeIcon from '../../assets/images/like.png';
+import likedIcon from '../../assets/images/liked.png';
 
 const CocktailDetailPage = () => {
   const { id } = useParams(); 
@@ -85,7 +85,7 @@ const CocktailDetailPage = () => {
 
   const handleEditClick = () => {
     // Redirect to the edit page with the cocktail id
-    navigate(`/edit/${id}`);
+    navigate(`/cocktails/${id}/update`);
   };
 
   const handleDeleteClick = async () => {

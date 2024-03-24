@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Header from '../components/common/Header';
-import Footer from '../components/common/Footer';
-import CocktailList from '../components/cocktail/CocktailList';
-import Pagination from '../components/cocktail/Pagination';
-import { getAllCocktails } from '../api/Cocktail';
+import Header from '../../components/common/Header';
+import Footer from '../../components/common/Footer';
+import CocktailList from '../../components/cocktail/CocktailList';
+import Pagination from '../../components/cocktail/Pagination';
+import { getAllCocktails } from '../../api/Cocktail';
 
 const ITEMS_PER_PAGE = 8;
 
