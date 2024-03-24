@@ -37,6 +37,46 @@ export const createCocktail = async (formData, token) => {
   }
 };
 
+// 글 수정
+export const updateCocktail = async (cocktailId, formData, token) => {
+  try {
+    const formDataWithImages = new FormData();
+    formDataWithImages.append('title', formData.title);
+    formDataWithImages.append('description', formData.description);
+    formDataWithImages.append('ingredient', formData.ingredient);
+    formDataWithImages.append('recipe', formData.recipe);
+    formDataWithImages.append('abv', formData.abv);
+    // 이미지 파일들을 FormData에 추가
+    formData.images.forEach((image) => {
+      formDataWithImages.append('images', image);
+    });
+
+    const response = await api.put(`/cocktails/${cocktailId}`, formDataWithImages, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // 이미지를 함께 전송할 때는 'multipart/form-data'로 설정
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(`Error updating cocktail: ${error.message}`);
+  }
+};
+
+// 글 삭제
+export const deleteCocktail = async (cocktailId, token) => {
+  try {
+    const response = await api.delete(`/cocktails/${cocktailId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(`Error deleting cocktail: ${error.message}`);
+  }
+};
 
   // 모든 글 조회, 검색
 export const getAllCocktails = async ({ page = 0, perPage = 8, sortBy = 'createdAt', keyword } = {}) => {
@@ -67,6 +107,21 @@ export const getAllCocktails = async ({ page = 0, perPage = 8, sortBy = 'created
       throw new Error(`Error fetching cocktail by id: ${error.message}`);
     }
   };
+
+  // 글 작성자 확인
+  export const checkIsOwnCocktail = async (cocktailId, token) => {
+    try {
+      const response = await api.get(`/cocktails/${cocktailId}/isOwn`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(`Error checking if the cocktail is owned by the user: ${error.message}`);
+    }
+  };
+
 // 좋아요 추가
 export const addLike = async (cocktailId, token) => {
   try {

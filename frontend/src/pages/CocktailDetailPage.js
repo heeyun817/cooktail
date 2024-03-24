@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
-import { getCocktailById, addLike, deleteLike, checkLikeStatus } from '../api/Cocktail';
+import { getCocktailById, addLike, deleteLike, checkLikeStatus, checkIsOwnCocktail, deleteCocktail } from '../api/Cocktail';
 import { getToken } from '../api/Auth';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 // 좋아요 아이콘 import
 import likeIcon from '../assets/images/like.png';
@@ -12,11 +12,13 @@ import likedIcon from '../assets/images/liked.png';
 
 const CocktailDetailPage = () => {
   const { id } = useParams(); 
+  const navigate = useNavigate();
 
   const [cocktail, setCocktail] = useState(null);
   const [mainImage, setMainImage] = useState(null);
   const [thumbnails, setThumbnails] = useState([]);
   const [likeStatus, setLikeStatus] = useState(false); // 좋아요 상태 추가
+  const [isOwnCocktail, setIsOwnCocktail] = useState(false);
 
   useEffect(() => {
     const fetchCocktail = async () => {
@@ -31,6 +33,9 @@ const CocktailDetailPage = () => {
 
         const initialLikeStatus = await checkLikeStatus(id, token);
         setLikeStatus(initialLikeStatus);
+
+        const ownCocktailStatus = await checkIsOwnCocktail(id, token);
+        setIsOwnCocktail(ownCocktailStatus);
       } catch (error) {
         console.error('Error fetching cocktail:', error);
       }
@@ -78,6 +83,33 @@ const CocktailDetailPage = () => {
     }
   };
 
+  const handleEditClick = () => {
+    // Redirect to the edit page with the cocktail id
+    navigate(`/edit/${id}`);
+  };
+
+  const handleDeleteClick = async () => {
+    try {
+      const token = getToken();
+
+      if (!token) {
+        alert('로그인이 필요합니다.');
+        return;
+      }
+
+      // Confirm deletion
+      const confirmDelete = window.confirm('정말로 삭제하시겠습니까?');
+
+      if (confirmDelete) {
+        // Call the deleteCocktail API
+        await deleteCocktail(id, token);
+        // Redirect to the home page or any other page after deletion
+        navigate('/cocktails');
+      }
+    } catch (error) {
+      console.error('Error handling delete click:', error);
+    }
+  };
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
@@ -127,6 +159,16 @@ const CocktailDetailPage = () => {
             </Details>
           </InfoContainer>
           <DateContainer>
+          {isOwnCocktail && (
+              <>
+                <EditButton onClick={handleEditClick}>
+                  수정하기
+                </EditButton>
+                <DeleteButton onClick={handleDeleteClick}>
+                  삭제하기
+                </DeleteButton>
+              </>
+            )}
             <DateSpan>작성일: {formatDate(cocktail?.createdAt)}</DateSpan>
             {cocktail?.createdAt !== cocktail?.updatedAt && (
               <DateSpan>수정일: {formatDate(cocktail?.updatedAt)}</DateSpan>
@@ -272,6 +314,20 @@ const LikeIcon = styled.img`
   margin-left: 20px;
 `;
 
+const EditButton = styled.button`
+background: none;
+  color: #777;
+  border: none;
+  margin-right: 5px;
+  cursor: pointer;
+`;
 
+const DeleteButton = styled.button`
+background: none;
+  color: #812;
+  border: none;
+  cursor: pointer;
+  margin-right: 15px;
+`;
 
 export default CocktailDetailPage;
