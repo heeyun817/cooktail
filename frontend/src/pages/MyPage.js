@@ -30,7 +30,8 @@ const MyPage = () => {
           nickname: userData.nickname,
           phone: userData.phone,
           birthDate: userData.birthDate,
-          bio: userData.bio
+          bio: userData.bio,
+          image: userData.image
           // 기타 필요한 필드 초기화
         });
       } catch (error) {
@@ -60,7 +61,7 @@ const MyPage = () => {
     try {
       const token = await getToken(); // 토큰 가져오기
       await changeMyInfo(formValues, profileImage, token); // 수정된 정보와 프로필 이미지 전송
-      // 성공적으로 수정되었음을 사용자에게 알리는 등의 작업 수행
+      window.location.reload(); // 페이지 새로고침
     } catch (error) {
       console.error('내 정보 수정 오류:', error);
       // 오류 처리
@@ -75,13 +76,28 @@ const MyPage = () => {
         {userInfo ? (
           <form onSubmit={handleSubmit}>
             <UserInfoContainer>
+              <ProfilePicture>
+                <img src={userInfo.image} alt="프로필 이미지" />
+              </ProfilePicture>
               <UserInfoItem>
-                <label htmlFor="name">이름:</label>
-                <input type="text" id="name" name="name" value={formValues.name} onChange={handleChange} />
+                <label htmlFor="profileImage">프로필 이미지:</label>
+                <input type="file" id="profileImage" name="profileImage" onChange={handleImageChange} accept="image/*" />
               </UserInfoItem>
               <UserInfoItem>
                 <label htmlFor="nickname">닉네임:</label>
                 <input type="text" id="nickname" name="nickname" value={formValues.nickname} onChange={handleChange} />
+              </UserInfoItem>
+              <UserInfoItem>
+                <label htmlFor="bio">소개:</label>
+                <textarea id="bio" name="bio" value={formValues.bio} onChange={handleChange} />
+              </UserInfoItem>
+              <UserInfoItem>
+                <label htmlFor="email">이메일:</label>
+                <input type="text" id="email" name="email" value={userInfo.email} disabled />
+              </UserInfoItem>
+              <UserInfoItem>
+                <label htmlFor="name">이름:</label>
+                <input type="text" id="name" name="name" value={formValues.name} onChange={handleChange} />
               </UserInfoItem>
               <UserInfoItem>
                 <label htmlFor="phone">전화번호:</label>
@@ -91,15 +107,6 @@ const MyPage = () => {
                 <label htmlFor="birthDate">생년월일:</label>
                 <input type="date" id="birthDate" name="birthDate" value={formValues.birthDate} onChange={handleChange} />
               </UserInfoItem>
-              <UserInfoItem>
-                <label htmlFor="bio">소개:</label>
-                <textarea id="bio" name="bio" value={formValues.bio} onChange={handleChange} />
-              </UserInfoItem>
-              <UserInfoItem>
-                <label htmlFor="profileImage">프로필 이미지:</label>
-                <input type="file" id="profileImage" name="profileImage" onChange={handleImageChange} accept="image/*" />
-              </UserInfoItem>
-              {/* 기타 필요한 폼 필드들을 추가 */}
             </UserInfoContainer>
             <button type="submit">수정하기</button>
           </form>
@@ -154,6 +161,20 @@ const LoadingMessage = styled.div`
   font-size: 16px;
   text-align: center;
   margin-top: 50px;
+`;
+
+const ProfilePicture = styled.div`
+  position: relative;
+  margin-bottom: 20px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
 
 export default MyPage;
