@@ -82,6 +82,10 @@ public class MemberServiceImpl implements MemberService{
     Member member = memberRepository.findById(memberId)
         .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원 ID입니다: " + memberId));
 
+    if (memberRepository.existsByNickname(myInfoRq.getNickname())) {
+      throw new RuntimeException("중복된 닉네임입니다.");
+    }
+
     String oldImageUrl = member.getImage();
     String newImageUrl = null;
 
