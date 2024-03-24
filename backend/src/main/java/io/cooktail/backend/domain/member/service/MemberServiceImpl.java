@@ -97,14 +97,14 @@ public class MemberServiceImpl implements MemberService{
 
     // 이미지가 업로드되지 않았거나 빈 이미지일 경우 기존 이미지 URL을 유지하고 업데이트하지 않음
     if (newImageUrl != null) {
-      member.update(myInfoRq.getName(), myInfoRq.getNickname(), myInfoRq.getPhone(), newImageUrl, myInfoRq.getBirthDate(), member.getBio());
+      member.update(myInfoRq.getName(), myInfoRq.getNickname(), myInfoRq.getPhone(), newImageUrl, myInfoRq.getBirthDate(), myInfoRq.getBio());
       // 이전 이미지가 기본 이미지가 아닌 경우에만 삭제
       if (!oldImageUrl.equals(DEFAULT_PROFILE_IMAGE_URL)) {
         s3Uploader.deleteFile(oldImageUrl);
       }
     } else {
       // 새 이미지가 없는 경우에는 기존 이미지 URL로만 회원 정보 업데이트
-      member.update(myInfoRq.getName(), myInfoRq.getNickname(), myInfoRq.getPhone(), oldImageUrl, myInfoRq.getBirthDate(), member.getBio());
+      member.update(myInfoRq.getName(), myInfoRq.getNickname(), myInfoRq.getPhone(), oldImageUrl, myInfoRq.getBirthDate(), myInfoRq.getBio());
     }
 
     return memberId;
