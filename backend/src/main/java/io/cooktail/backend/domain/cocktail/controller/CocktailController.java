@@ -121,11 +121,21 @@ public class CocktailController {
     List<CocktailRs> cocktailRs = service.findLikedCocktail(Long.valueOf(memberId));
     return ResponseEntity.ok(cocktailRs);
   }
+
   // 본인이 작성한 글 조회
   @GetMapping("/cocktails/me")
   public ResponseEntity<List<CocktailRs>> getMemberCocktails(@AuthenticationPrincipal String memberId) {
     List<CocktailRs> memberCocktails = service.findMemberCocktails(Long.valueOf(memberId));
     return ResponseEntity.ok(memberCocktails);
   }
+
+  // 본인이 작성한 글인지 확인
+  @GetMapping("/cocktails/{id}/isOwn")
+  public boolean checkIsOwnCocktail(
+      @PathVariable Long id,
+      @AuthenticationPrincipal String memberId) {
+    return service.isOwnCocktail(id, Long.valueOf(memberId));
+  }
+
 
 }
