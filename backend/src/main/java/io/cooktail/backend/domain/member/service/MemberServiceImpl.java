@@ -83,19 +83,33 @@ public class MemberServiceImpl implements MemberService{
         .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원 ID입니다: " + memberId));
 
     String oldImageUrl = member.getImage();
+    String newImageUrl = null;
+
     // 새 이미지 업로드 및 연결
-    String dirName = "member";
-    try {
-      String newImageUrl = s3Uploader.uploadFile(dirName, image);
+    if (image != null && !image.isEmpty()) {
+      String dirName = "member";
+      try {
+        newImageUrl = s3Uploader.uploadFile(dirName, image);
+      } catch (Exception e) {
+        throw new RuntimeException("이미지 업로드에 실패했습니다.", e);
+      }
+    }
+
+    // 이미지가 업로드되지 않았거나 빈 이미지일 경우 기존 이미지 URL을 유지하고 업데이트하지 않음
+    if (newImageUrl != null) {
       member.update(myInfoRq.getName(), myInfoRq.getNickname(), myInfoRq.getPhone(), newImageUrl, myInfoRq.getBirthDate(), member.getBio());
+      // 이전 이미지가 기본 이미지가 아닌 경우에만 삭제
       if (!oldImageUrl.equals(DEFAULT_PROFILE_IMAGE_URL)) {
         s3Uploader.deleteFile(oldImageUrl);
       }
-    } catch (Exception e) {
-      throw new RuntimeException("이미지 업로드에 실패했습니다.", e);
+    } else {
+      // 새 이미지가 없는 경우에는 기존 이미지 URL로만 회원 정보 업데이트
+      member.update(myInfoRq.getName(), myInfoRq.getNickname(), myInfoRq.getPhone(), oldImageUrl, myInfoRq.getBirthDate(), member.getBio());
     }
+
     return memberId;
   }
+
 
   // 비밀번호 확인
   @Override
