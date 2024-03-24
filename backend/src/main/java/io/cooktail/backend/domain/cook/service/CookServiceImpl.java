@@ -11,6 +11,8 @@ import io.cooktail.backend.domain.cook.repository.CookLikeRepository;
 import io.cooktail.backend.domain.member.domain.Member;
 import io.cooktail.backend.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
+
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -196,5 +198,45 @@ public class CookServiceImpl implements CookService {
         CookLike cookLike = cookLikeRepository.findByMemberAndCook(member, cook)
                 .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 좋아요를 찾을 수 없습니다."));
         cookLikeRepository.delete(cookLike);
+    }
+
+    // 좋아요 글 조회
+    @Override
+    public List<CookRs> findLikedCook(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 Member를 찾을 수 없습니다: " + memberId));
+
+        List<CookLike> likedCookLikes = cookLikeRepository.findByMember(member);
+
+        List<CookRs> likedCooks = likedCookLikes.stream()
+                .map(CookLike::getCook)
+                .sorted(Comparator.comparing(Cook::getCreatedAt).reversed()) // 최신순 정렬
+                .map(cook -> CookRs.builder()
+                        .cook(cook)
+                        .images(cook.getCookImages().stream()
+                                .map(CookImage::getImageUrl)
+                                .collect(Collectors.toList()))
+                        .build())
+                .collect(Collectors.toList());
+
+        return likedCooks;
+    }
+
+    // 본인이 작성한 레시피 조회
+    @Override
+    public List<CookRs> findMemberCooks(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 Member를 찾을 수 없습니다: " + memberId));
+
+        List<Cook> memberCooks = cookRepository.findByMemberOrderByCreatedAtDesc(member);
+
+        return memberCooks.stream()
+                .map(cook -> CookRs.builder()
+                .cook(cook)
+                .images(cook.getCookImages().stream()
+                        .map(CookImage::getImageUrl)
+                        .collect(Collectors.toList()))
+                        .build())
+                .collect(Collectors.toList());
     }
 }

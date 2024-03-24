@@ -200,6 +200,18 @@ public class CocktailServiceImpl implements CocktailService{
         .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 좋아요를 찾을 수 없습니다."));
     cocktailLikeRepository.delete(cocktailLike);
   }
+
+  @Override
+  public boolean checkLikeStatus(Long cocktailId, Long memberId) {
+    Cocktail cocktail = cocktailRepository.findById(cocktailId)
+        .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 글을 찾을 수 없습니다: " + cocktailId));
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 Member를 찾을 수 없습니다: " + memberId));
+
+    return cocktailLikeRepository.existsByMemberAndCocktail(member, cocktail);
+  }
+
+
   // 좋아요한 글 조회
   @Override
   public List<CocktailRs> findLikedCocktail(Long memberId) {

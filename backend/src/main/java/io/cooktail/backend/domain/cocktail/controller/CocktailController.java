@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class CocktailController {
 
   private final CocktailService service;
@@ -89,9 +91,15 @@ public class CocktailController {
   public Long addLike(
       @PathVariable Long id,
       @AuthenticationPrincipal String memberId) {
-    service.addLike(id, Long.valueOf(memberId));
-    return id;
+    try {
+      service.addLike(id, Long.valueOf(memberId));
+      return id;
+    } catch (Exception e) {
+      log.error("Error adding like for cocktail ID {}: {}", id, e.getMessage(), e);
+      throw new RuntimeException("Error adding like");
+    }
   }
+
 
   // 좋아요 해제
   @DeleteMapping("/cocktails/like/{id}")
@@ -101,6 +109,15 @@ public class CocktailController {
     service.deleteLike(id, Long.valueOf(memberId));
     return id;
   }
+
+  // 좋아요 상태 확인
+  @GetMapping("/cocktails/like/{id}/status")
+  public boolean checkLikeStatus(
+      @PathVariable Long id,
+      @AuthenticationPrincipal String memberId) {
+    return service.checkLikeStatus(id, Long.valueOf(memberId));
+  }
+
 
   // 좋아요한 글 조회
   @GetMapping("/cocktails/like")
