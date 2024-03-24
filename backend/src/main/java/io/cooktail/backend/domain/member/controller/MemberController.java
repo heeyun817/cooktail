@@ -66,9 +66,9 @@ public class MemberController {
   public Long changeMyInfo(
       @ModelAttribute MyInfoRq myInfoRq,
       @AuthenticationPrincipal String memberId,
-      @RequestPart(value = "image") MultipartFile image) {
-    return memberService.changeMyInfo(Long.parseLong(memberId),myInfoRq, image);
-    }
+      @RequestPart(value = "image", required = false) MultipartFile image) {
+    return memberService.changeMyInfo(Long.parseLong(memberId), myInfoRq, image);
+  }
 
   // 비밀번호 변경
   @PatchMapping("/members/password")
