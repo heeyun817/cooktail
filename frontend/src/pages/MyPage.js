@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
-import Sidebar from '../components/Sidebar';
+import Sidebar from '../components/mypage/Sidebar';
 import { getToken } from '../api/Auth';
 import { getMyInfo, changeMyInfo, changePassword } from '../api/MyPage';
 import editIcon from '../assets/images/edit.png';

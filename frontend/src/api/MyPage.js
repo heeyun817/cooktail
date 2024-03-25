@@ -62,3 +62,19 @@ export const changePassword = async (passwordData, token) => {
     throw error;
   }
 };
+
+// 본인이 작성한 칵테일 글 조회
+export const getMyCocktails = async (token) => {
+  try {
+    const response = await api.get('/cocktails/me', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('본인이 작성한 글 조회 오류:', error);
+    throw error;
+  }
+};
+

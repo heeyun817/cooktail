@@ -11,11 +11,11 @@ const Sidebar = () => {
         <li className={location.pathname === '/mypage' ? 'active' : ''}>
           <a href="/mypage">프로필 설정</a>
         </li>
-        <li className={location.pathname === '/mycocktails' ? 'active' : ''}>
-          <a href="/mycocktails">나의 칵테일 레시피</a>
+        <li className={location.pathname === '/myrecipe' ? 'active' : ''}>
+          <a href="/myrecipe">나의 레시피</a>
         </li>
-        <li className={location.pathname === '/mycooks' ? 'active' : ''}>
-          <a href="/mycooks">나의 안주 레시피</a>
+        <li className={location.pathname === '/likerecipe' ? 'active' : ''}>
+          <a href="/likerecipe">내가 좋아요 한 레시피</a>
         </li>
       </ul>
     </StyledSidebar>
