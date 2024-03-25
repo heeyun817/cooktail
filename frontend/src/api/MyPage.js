@@ -78,3 +78,17 @@ export const getMyCocktails = async (token) => {
   }
 };
 
+// 본인이 작성한 안주 글 조회
+export const getMyCooks = async (token) => {
+  try {
+    const response = await api.get('/cook/me', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('본인이 작성한 글 조회 오류:', error);
+    throw error;
+  }
+};

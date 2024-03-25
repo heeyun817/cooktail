@@ -21,6 +21,8 @@ const MyRecipeList = ({ cocktails }) => {
 const ListContainer = styled.div`
   width: 100%;
   position: relative;
+  overflow-x: auto; /* 가로 스크롤 추가 */
+  max-width: 100vw;
 `;
 
 const List = styled.ul`

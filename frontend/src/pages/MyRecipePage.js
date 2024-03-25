@@ -2,25 +2,28 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
-import MyRecipeList from '../components/mypage/MyRecipeList';
+import MyCocktailList from '../components/mypage/MyCocktailList';
 import Sidebar from '../components/mypage/Sidebar';
-import { getMyCocktails } from '../api/MyPage'; // 본인이 작성한 칵테일 글 조회 함수
+import { getMyCocktails, getMyCooks } from '../api/MyPage'; // 본인이 작성한 칵테일 및 안주 글 조회 함수
 
 const MyRecipePage = () => {
   const [cocktails, setCocktails] = useState([]);
+  const [cooks, setCooks] = useState([]);
 
   useEffect(() => {
-    const fetchMyCocktails = async () => {
+    const fetchData = async () => {
       try {
         const token = getToken(); // 사용자 토큰을 가져오는 함수 호출
         const myCocktails = await getMyCocktails(token);
+        const myCooks = await getMyCooks(token);
         setCocktails(myCocktails);
+        setCooks(myCooks);
       } catch (error) {
-        console.error('본인이 작성한 칵테일 글 조회 오류:', error);
+        console.error('본인이 작성한 레시피 조회 오류:', error);
       }
     };
 
-    fetchMyCocktails();
+    fetchData();
   }, []);
 
   // 쿠키에서 토큰을 가져오는 함수
@@ -42,8 +45,11 @@ const MyRecipePage = () => {
       <Layout>
         <Sidebar />
         <Container>
-        <Title>칵테일 레시피</Title>
-          <MyRecipeList cocktails={cocktails} />
+          <Title>칵테일 레시피</Title>
+          <MyCocktailList cocktails={cocktails} />
+          <Title>안주 레시피</Title> 
+          {/* 나중에 안주 레시피 컴포넌트로 바꾸기 */}
+          <MyCocktailList cocktails={cooks} />
         </Container>
       </Layout>
       <Footer />
