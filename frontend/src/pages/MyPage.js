@@ -4,7 +4,7 @@ import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 import Sidebar from '../components/Sidebar';
 import { getToken } from '../api/Auth';
-import { getMyInfo, changeMyInfo } from '../api/MyPage';
+import { getMyInfo, changeMyInfo, changePassword } from '../api/MyPage';
 import editIcon from '../assets/images/edit.png';
 
 const MyPage = () => {
@@ -14,12 +14,18 @@ const MyPage = () => {
     nickname: '',
     phone: '',
     birthDate: '',
-    bio: ''
+    bio: '',
     // 기타 필요한 폼 필드 추가
   });
-  const [profileImage, setProfileImage] = useState(null); // 프로필 이미지 상태 추가
-  const [profileImagePreview, setProfileImagePreview] = useState(null); // 프로필 이미지 미리보기 상태 추가
+  const [profileImage, setProfileImage] = useState(null);
+  const [profileImagePreview, setProfileImagePreview] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+  const [passwordError, setPasswordError] = useState('');
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -32,17 +38,16 @@ const MyPage = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const token = await getToken(); // 토큰 가져오기
-        const userData = await getMyInfo(token); // 사용자 정보 가져오기
-        setUserInfo(userData); // 가져온 사용자 정보로 상태 업데이트
-        // 가져온 사용자 정보로 폼 데이터 초기화
+        const token = await getToken();
+        const userData = await getMyInfo(token);
+        setUserInfo(userData);
         setFormValues({
           name: userData.name,
           nickname: userData.nickname,
           phone: userData.phone,
           birthDate: userData.birthDate,
           bio: userData.bio,
-          image: userData.image
+          image: userData.image,
           // 기타 필요한 필드 초기화
         });
       } catch (error) {
@@ -61,14 +66,13 @@ const MyPage = () => {
     });
   };
 
-  // 프로필 이미지 변경 이벤트 처리 함수
   const handleImageChange = (e) => {
-    const imageFile = e.target.files[0]; // 파일 선택
-    setProfileImage(imageFile); // 선택된 이미지를 상태에 저장
+    const imageFile = e.target.files[0];
+    setProfileImage(imageFile);
     if (imageFile) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfileImagePreview(reader.result); // 이미지 미리보기 업데이트
+        setProfileImagePreview(reader.result);
       };
       reader.readAsDataURL(imageFile);
     }
@@ -77,12 +81,36 @@ const MyPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = await getToken(); // 토큰 가져오기
-      await changeMyInfo(formValues, profileImage, token); // 수정된 정보와 프로필 이미지 전송
-      window.location.reload(); // 페이지 새로고침
+      const token = await getToken();
+      await changeMyInfo(formValues, profileImage, token);
+      window.location.reload();
     } catch (error) {
       console.error('내 정보 수정 오류:', error);
-      // 오류 처리
+    }
+  };
+
+  const handlePasswordInputChange = (e) => {
+    const { name, value } = e.target;
+    setPasswordData({
+      ...passwordData,
+      [name]: value,
+    });
+  };
+
+  const handlePasswordChange = async () => {
+    const { newPassword, confirmPassword } = passwordData;
+    if (newPassword !== confirmPassword) {
+      alert('새로운 비밀번호와 비밀번호 확인이 일치하지 않습니다.');
+      return;
+    }
+    try {
+      const token = await getToken(); // Get token
+      await changePassword(passwordData, token); // Call API to change password
+      setIsModalOpen(false);
+      alert('비밀번호가 성공적으로 변경되었습니다.');
+    } catch (error) {
+      console.error('비밀번호 변경 오류:', error);
+      alert('비밀번호 변경에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
@@ -136,12 +164,12 @@ const MyPage = () => {
                 <input type="date" id="birthDate" name="birthDate" value={formValues.birthDate} onChange={handleChange} />
               </UserInfoItem>
             </UserInfoContainer>
-            <ChangePasswordButton onClick={handleOpenModal}>비밀번호 변경</ChangePasswordButton>
             <SubmitButton type="submit">수정</SubmitButton>
           </form>
         ) : (
           <LoadingMessage>사용자 정보를 불러오는 중...</LoadingMessage>
         )}
+        <ChangePasswordButton onClick={handleOpenModal}>비밀번호 변경</ChangePasswordButton>
       </Container>
       </Layout>
       <Footer />
@@ -154,15 +182,13 @@ const MyPage = () => {
               <CloseModalButton onClick={handleCloseModal}>닫기</CloseModalButton>
             </ModalHeader>
             <ModalContent>
-              {/* 비밀번호 변경 폼 */}
               <label htmlFor="currentPassword">현재 비밀번호</label>
-              <input type="password" id="currentPassword" name="currentPassword" />
+              <input type="password" id="currentPassword" name="currentPassword" value={passwordData.currentPassword} onChange={handlePasswordInputChange} />
               <label htmlFor="newPassword">새로운 비밀번호</label>
-              <input type="password" id="newPassword" name="newPassword" />
+              <input type="password" id="newPassword" name="newPassword" value={passwordData.newPassword} onChange={handlePasswordInputChange} />
               <label htmlFor="confirmPassword">새로운 비밀번호 확인</label>
-              <input type="password" id="confirmPassword" name="confirmPassword" />
-              {/* 비밀번호 변경 버튼 */}
-              <ChangePasswordSubmitButton>변경</ChangePasswordSubmitButton>
+              <input type="password" id="confirmPassword" name="confirmPassword" value={passwordData.confirmPassword} onChange={handlePasswordInputChange} />
+              <ChangePasswordSubmitButton onClick={handlePasswordChange}>변경</ChangePasswordSubmitButton>
             </ModalContent>
           </ModalContainer>
         </ModalOverlay>
@@ -200,7 +226,6 @@ const Container = styled.div`
   border-radius: 20px;
   border: 1px solid #ccc;
   padding: 50px;
-  display: flex;
   align-items: flex-start;
   flex-grow: 1;
   margin-right: 100px;
@@ -298,7 +323,8 @@ const CloseModalButton = styled.button`
 `;
 
 const ModalContent = styled.div`
-  /* 모달 내용에 대한 스타일 */
+  display: flex;
+  flex-direction: column; /* 세로 정렬 */
 `;
 
 const ChangePasswordButton = styled.button`
