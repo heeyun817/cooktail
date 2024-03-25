@@ -48,3 +48,17 @@ export const changeMyInfo = async (myInfoRq, image, token) => {
   }
 };
 
+// 비밀번호 변경
+export const changePassword = async (passwordData, token) => {
+  try {
+    const response = await api.patch('/members/password', passwordData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('비밀번호 변경 오류:', error);
+    throw error;
+  }
+};
