@@ -251,5 +251,22 @@ public class CocktailServiceImpl implements CocktailService{
             .build())
         .collect(Collectors.toList());
   }
+  //본인이 작성한 글인지 확인
+  @Override
+  public boolean isOwnCocktail(Long cocktailId, Long memberId) {
+    Optional<Cocktail> optionalCocktail = cocktailRepository.findById(cocktailId);
+    Optional<Member> optionalMember = memberRepository.findById(memberId);
+
+    if (optionalCocktail.isPresent() && optionalMember.isPresent()) {
+      Cocktail cocktail = optionalCocktail.get();
+      Member member = optionalMember.get();
+
+      return cocktail.getMember().getId().equals(member.getId());
+    }
+
+    // 해당하는 Cocktail이나 Member가 없다면 false를 반환
+    return false;
+  }
+
 
 }

@@ -102,6 +102,14 @@ public class CookController {
         return id;
     }
 
+    // 좋아요 상태 확인
+    @GetMapping("/cooks/like/{id}/status")
+    public boolean checkLikeStatus(
+        @PathVariable Long id,
+        @AuthenticationPrincipal String memberId) {
+        return service.checkLikeStatus(id, Long.valueOf(memberId));
+    }
+
     // 좋아요한 레시피 조회
     @GetMapping("/cooks/like")
     public List<CookRs> getLikedCook(@AuthenticationPrincipal String memberId) {
@@ -109,10 +117,18 @@ public class CookController {
     }
 
     // 본인이 작성한 레시피 조회
-    @GetMapping("/cook/me")
+    @GetMapping("/cooks/me")
     public ResponseEntity<List<CookRs>> getMemberCocktails(@AuthenticationPrincipal String memberId) {
         List<CookRs> memberCooks = service.findMemberCooks(Long.valueOf(memberId));
         return ResponseEntity.ok(memberCooks);
+    }
+
+    // 본인이 작성한 글인지 확인
+    @GetMapping("/cooks/{id}/isOwn")
+    public boolean checkIsOwnCook(
+        @PathVariable Long id,
+        @AuthenticationPrincipal String memberId) {
+        return service.isOwnCook(id, Long.valueOf(memberId));
     }
 
 }

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Header from '../components/common/Header';
-import Footer from '../components/common/Footer';
-import CocktailList from '../components/cocktail/CocktailList';
-import Pagination from '../components/cocktail/Pagination';
-import { getAllCocktails } from '../api/Cocktail';
+import Header from '../../components/common/Header';
+import Footer from '../../components/common/Footer';
+import CookList from '../../components/cook/CookList';
+import Pagination from '../../components/cook/Pagination';
+import { getAllCooks } from '../../api/Cook';
 
 const ITEMS_PER_PAGE = 8;
 
-const CocktailListPage = () => {
-  const [cocktails, setCocktails] = useState([]);
+const CookListPage = () => {
+  const [cooks, setCooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [sortOption, setSortOption] = useState(null);
@@ -18,16 +18,16 @@ const CocktailListPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getAllCocktails({
+        const response = await getAllCooks({
           sortBy: sortOption,
           page: currentPage - 1,
           perPage: ITEMS_PER_PAGE,
           keyword: searchKeyword,
         });
-        setCocktails(response.content || []);
+        setCooks(response.content || []);
         setTotalPages(response.totalPages || 1);
       } catch (error) {
-        console.error('Error fetching cocktails:', error.message);
+        console.error('Error fetching cooks:', error.message);
       }
     };
 
@@ -51,9 +51,9 @@ const CocktailListPage = () => {
   return (
     <>
       <Header />
-      <BoardTitle>칵테일 레시피</BoardTitle>
-      <CocktailList
-        cocktails={cocktails}
+      <BoardTitle>안주 레시피</BoardTitle>
+      <CookList
+        cooks={cooks}
         onSortClick={handleSortClick}
         onSearch={handleSearch}
       />
@@ -81,4 +81,4 @@ const PaginationContainer = styled.div`
   margin-bottom: 50px;
 `;
 
-export default CocktailListPage;
+export default CookListPage;

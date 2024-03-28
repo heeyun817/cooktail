@@ -53,13 +53,14 @@ public class CocktailController {
 
   // 작성
   @PostMapping("/cocktails")
-  public Long createCocktail(
+  public ResponseEntity<Long> createCocktail(
       @AuthenticationPrincipal String memberId,
       @ModelAttribute CocktailRq cocktailRq,
       @RequestPart(value = "images") List<MultipartFile> images) throws IOException {
     String dirName = "cocktail";
     List<String> imageUrls = s3Uploader.uploadFiles(dirName, images);
-    return service.createCocktail(Long.parseLong(memberId),cocktailRq,imageUrls);
+    Long cocktailId = service.createCocktail(Long.parseLong(memberId),cocktailRq,imageUrls);
+    return ResponseEntity.ok(cocktailId);
   }
 
   // 수정
@@ -91,13 +92,8 @@ public class CocktailController {
   public Long addLike(
       @PathVariable Long id,
       @AuthenticationPrincipal String memberId) {
-    try {
       service.addLike(id, Long.valueOf(memberId));
       return id;
-    } catch (Exception e) {
-      log.error("Error adding like for cocktail ID {}: {}", id, e.getMessage(), e);
-      throw new RuntimeException("Error adding like");
-    }
   }
 
 
@@ -125,11 +121,21 @@ public class CocktailController {
     List<CocktailRs> cocktailRs = service.findLikedCocktail(Long.valueOf(memberId));
     return ResponseEntity.ok(cocktailRs);
   }
+
   // 본인이 작성한 글 조회
   @GetMapping("/cocktails/me")
   public ResponseEntity<List<CocktailRs>> getMemberCocktails(@AuthenticationPrincipal String memberId) {
     List<CocktailRs> memberCocktails = service.findMemberCocktails(Long.valueOf(memberId));
     return ResponseEntity.ok(memberCocktails);
   }
+
+  // 본인이 작성한 글인지 확인
+  @GetMapping("/cocktails/{id}/isOwn")
+  public boolean checkIsOwnCocktail(
+      @PathVariable Long id,
+      @AuthenticationPrincipal String memberId) {
+    return service.isOwnCocktail(id, Long.valueOf(memberId));
+  }
+
 
 }

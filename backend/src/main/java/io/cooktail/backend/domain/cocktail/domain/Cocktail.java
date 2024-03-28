@@ -52,7 +52,7 @@ public class Cocktail {
   private double abv;
   // 작성자
   @JoinColumn(name = "member_id")
-  @ManyToOne(cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.EAGER)
   private Member member;
   // 작성일
   @CreationTimestamp

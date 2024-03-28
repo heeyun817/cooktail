@@ -35,4 +35,6 @@ public interface CocktailService {
   List<CocktailRs> findLikedCocktail(Long memberId);
   // 본인이 작성한 글 조회
   List<CocktailRs> findMemberCocktails(Long memberId);
+  // 본인이 작성한 글인지 확인
+  boolean isOwnCocktail(Long id, Long aLong);
 }

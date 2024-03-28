@@ -46,7 +46,7 @@ public class Cook {
     private final List<CookImage> cookImages = new ArrayList<>();
     // 작성자
     @JoinColumn(name = "member_id")
-    @ManyToOne(cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Member member;
     // 작성일
     @CreationTimestamp
