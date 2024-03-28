@@ -10,6 +10,7 @@ import SignUpSuccess from './pages/SingUpSuccessPage';
 import MyPage from './pages/MyPage';
 import MyRecipePage from './pages/MyRecipePage';
 import LikePage from './pages/LikePage';
+import CookListPage from './pages/cook/CookListPage';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
                     <Route exact path="/cocktails/:id" element={<CocktailDetailPage />} />
                     <Route exact path="/cocktails/create" element={<CocktailCreatePage />} />
                     <Route exact path="/cocktails/:id/update" element={<CocktailUpdatePage />} />
+                    <Route exact path="/cooks" element={<CookListPage />} />
                     <Route exact path="/login" element={<LoginPage />} />
                     <Route exact path="/signup" element={<SignUpPage />} />
                     <Route exact path="/signup/success" element={<SignUpSuccess />} />
