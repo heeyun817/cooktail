@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 import MyCocktailList from '../components/mypage/MyCocktailList';
+import MyCookList from '../components/mypage/MyCookList';
 import Sidebar from '../components/mypage/Sidebar';
 import { getMyCocktails, getMyCooks } from '../api/MyPage'; // 본인이 작성한 칵테일 및 안주 글 조회 함수
 
@@ -47,9 +48,8 @@ const MyRecipePage = () => {
         <Container>
           <Title>칵테일 레시피</Title>
           <MyCocktailList cocktails={cocktails} />
-          <Title>안주 레시피</Title> 
-          {/* 나중에 안주 레시피 컴포넌트로 바꾸기 */}
-          <MyCocktailList cocktails={cooks} />
+          <Title>안주 레시피</Title>
+          <MyCookList cooks={cooks} />
         </Container>
       </Layout>
       <Footer />

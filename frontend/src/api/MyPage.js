@@ -81,7 +81,7 @@ export const getMyCocktails = async (token) => {
 // 본인이 작성한 안주 글 조회
 export const getMyCooks = async (token) => {
   try {
-    const response = await api.get('/cook/me', {
+    const response = await api.get('/cooks/me', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -97,6 +97,21 @@ export const getMyCooks = async (token) => {
 export const getLikedCocktails = async (token) => {
   try {
     const response = await api.get('/cocktails/like', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('좋아요한 칵테일 글 조회 오류:', error);
+    throw error;
+  }
+};
+
+// 좋아요한 안주 글 조회
+export const getLikedCooks = async (token) => {
+  try {
+    const response = await api.get('/cooks/like', {
       headers: {
         Authorization: `Bearer ${token}`,
       },

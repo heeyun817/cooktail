@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import CocktailItem from '../cocktail/CocktailItem';
+import CookItem from '../cook/CookItem';
 import { useNavigate } from 'react-router-dom';
 import { getToken } from '../../api/Auth';
 
-const MyCocktailList = ({ cocktails }) => {
+const MyCookList = ({ cooks }) => {
   const navigate = useNavigate();
 
   return (
     <ListContainer>
       <List>
-        {cocktails.map((cocktails) => (
-          <CocktailItem key={cocktails.id} cocktails={cocktails} />
+        {cooks.map((cooks) => (
+          <CookItem key={cooks.id} cooks={cooks} />
         ))}
       </List>
     </ListContainer>
@@ -43,4 +43,4 @@ const List = styled.ul`
   }
 `;
 
-export default MyCocktailList;
+export default MyCookList;
