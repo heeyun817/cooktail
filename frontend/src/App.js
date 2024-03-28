@@ -11,6 +11,9 @@ import MyPage from './pages/MyPage';
 import MyRecipePage from './pages/MyRecipePage';
 import LikePage from './pages/LikePage';
 import CookListPage from './pages/cook/CookListPage';
+import CookDetailPage from './pages/cook/CookDetailPage';
+import CookCreatePage from './pages/cook/CookCreatePage';
+import CookUpdatePage from './pages/cook/CookUpdatePage';
 
 function App() {
   return (
@@ -23,6 +26,9 @@ function App() {
                     <Route exact path="/cocktails/create" element={<CocktailCreatePage />} />
                     <Route exact path="/cocktails/:id/update" element={<CocktailUpdatePage />} />
                     <Route exact path="/cooks" element={<CookListPage />} />
+                    <Route exact path="/cooks/:id" element={<CookDetailPage />} />
+                    <Route exact path="/cooks/create" element={<CookCreatePage />} />
+                    <Route exact path="/cooks/:id/update" element={<CookUpdatePage />} />
                     <Route exact path="/login" element={<LoginPage />} />
                     <Route exact path="/signup" element={<SignUpPage />} />
                     <Route exact path="/signup/success" element={<SignUpSuccess />} />

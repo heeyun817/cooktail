@@ -33,4 +33,9 @@ public interface CookService {
     List<CookRs> findLikedCook(Long memberId);
     // 본인이 작성한 레시피 조회
     List<CookRs> findMemberCooks(Long memberId);
+
+    // 좋아요 상태 확인
+    boolean checkLikeStatus(Long id, Long aLong);
+    // 본인이 작성한 글인지 확인
+    boolean isOwnCook(Long id, Long aLong);
 }

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
-import CocktailList from '../../components/cocktail/CocktailList';
-import Pagination from '../../components/cocktail/Pagination';
+import CookList from '../../components/cook/CookList';
+import Pagination from '../../components/cook/Pagination';
 import { getAllCooks } from '../../api/Cook';
 
 const ITEMS_PER_PAGE = 8;
@@ -51,9 +51,9 @@ const CookListPage = () => {
   return (
     <>
       <Header />
-      <BoardTitle>칵테일 레시피</BoardTitle>
-      <CocktailList
-        cocktails={cooks}
+      <BoardTitle>안주 레시피</BoardTitle>
+      <CookList
+        cooks={cooks}
         onSortClick={handleSortClick}
         onSearch={handleSearch}
       />

@@ -1,5 +1,6 @@
 package io.cooktail.backend.domain.cook.service;
 
+import io.cooktail.backend.domain.cocktail.domain.Cocktail;
 import io.cooktail.backend.domain.cook.domain.Cook;
 import io.cooktail.backend.domain.cook.domain.CookImage;
 import io.cooktail.backend.domain.cook.domain.CookLike;
@@ -238,5 +239,31 @@ public class CookServiceImpl implements CookService {
                         .collect(Collectors.toList()))
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean checkLikeStatus(Long cookId, Long memberId) {
+        Cook cook = cookRepository.findById(cookId)
+            .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 글을 찾을 수 없습니다: " + cookId));
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new NoSuchElementException("해당 ID에 매칭되는 Member를 찾을 수 없습니다: " + memberId));
+
+        return cookLikeRepository.existsByMemberAndCook(member, cook);
+    }
+
+    @Override
+    public boolean isOwnCook(Long cookId, Long memberId) {
+        Optional<Cook> optionalCook = cookRepository.findById(cookId);
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+
+        if (optionalCook.isPresent() && optionalMember.isPresent()) {
+            Cook cook = optionalCook.get();
+            Member member = optionalMember.get();
+
+            return cook.getMember().getId().equals(member.getId());
+        }
+
+        // 해당하는 Cook이나 Member가 없다면 false를 반환
+        return false;
     }
 }
