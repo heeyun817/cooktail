@@ -9,6 +9,7 @@ import SignUpPage from './pages/SignUpPage';
 import SignUpSuccess from './pages/SingUpSuccessPage';
 import MyPage from './pages/MyPage';
 import MyRecipePage from './pages/MyRecipePage';
+import LikePage from './pages/LikePage';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
                     <Route exact path="/signup/success" element={<SignUpSuccess />} />
                     <Route exact path="/mypage" element={<MyPage />} />
                     <Route exact path="/myrecipe" element={<MyRecipePage />} />
+                    <Route exact path="/likerecipe" element={<LikePage />} />
                 </Routes>
             </>
         </BrowserRouter>
