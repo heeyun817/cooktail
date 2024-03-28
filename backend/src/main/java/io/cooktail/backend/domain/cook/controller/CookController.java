@@ -117,7 +117,7 @@ public class CookController {
     }
 
     // 본인이 작성한 레시피 조회
-    @GetMapping("/cook/me")
+    @GetMapping("/cooks/me")
     public ResponseEntity<List<CookRs>> getMemberCocktails(@AuthenticationPrincipal String memberId) {
         List<CookRs> memberCooks = service.findMemberCooks(Long.valueOf(memberId));
         return ResponseEntity.ok(memberCooks);
