@@ -63,6 +63,17 @@ export const changePassword = async (passwordData, token) => {
   }
 };
 
+// 다른 유저의 프로필 정보 조회
+export const getUserProfile = async (userId) => {
+  try {
+    const response = await api.get(`/members/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('다른 유저의 프로필 정보 조회 오류:', error);
+    throw error;
+  }
+};
+
 // 본인이 작성한 칵테일 글 조회
 export const getMyCocktails = async (token) => {
   try {

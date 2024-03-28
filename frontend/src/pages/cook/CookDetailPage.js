@@ -5,6 +5,7 @@ import Footer from '../../components/common/Footer';
 import { getCookById, addLike, deleteLike, checkLikeStatus, checkIsOwnCook, deleteCook } from '../../api/Cook';
 import { getToken } from '../../api/Auth';
 import { useParams, useNavigate } from 'react-router-dom';
+import { getUserProfile } from '../../api/MyPage';
 
 // 좋아요 아이콘 import
 import likeIcon from '../../assets/images/like.png';
@@ -19,6 +20,8 @@ const CookDetailPage = () => {
   const [thumbnails, setThumbnails] = useState([]);
   const [likeStatus, setLikeStatus] = useState(false); // 좋아요 상태 추가
   const [isOwnCook, setIsOwnCook] = useState(false);
+  const [userProfile, setUserProfile] = useState(null); // 유저 프로필 정보 상태 추가
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 창 상태 추가
 
   useEffect(() => {
     const fetchCook = async () => {
@@ -36,6 +39,9 @@ const CookDetailPage = () => {
 
         const ownCookStatus = await checkIsOwnCook(id, token);
         setIsOwnCook(ownCookStatus);
+
+        const userProfileData = await getUserProfile(cookData.member.id);
+        setUserProfile(userProfileData);
       } catch (error) {
         console.error('Error fetching cook:', error);
       }
@@ -47,6 +53,15 @@ const CookDetailPage = () => {
   if (!cook) {
     return <div>Loading...</div>;
   }
+
+  const handleUserClick = async () => {
+    setIsModalOpen(true); // 모달 창 열기
+  };
+
+  // 모달 닫기 핸들러
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   const handleThumbnailClick = (clickedImage) => {
     setThumbnails((prevThumbnails) => {
@@ -116,6 +131,14 @@ const CookDetailPage = () => {
     return new Date(dateString).toLocaleString('ko-KR', options);
   };
 
+  // 생일 문자열 형식 변환 함수
+const formatBirthdate = (birthdateString) => {
+  const [year, month, day] = birthdateString.split('-');
+  const monthString = month.startsWith('0') ? month.slice(1) : month;
+  const dayString = day.startsWith('0') ? day.slice(1) : day;
+  return `${monthString}월 ${dayString}일`;
+};
+
   return (
     <>
       <Header />
@@ -137,7 +160,7 @@ const CookDetailPage = () => {
         <ExplainContainer>
           <InfoContainer>
             <Info>
-              <User>{cook?.member?.nickname}님의 레시피</User>
+            <User onClick={handleUserClick}>{cook?.member?.nickname}님의 레시피</User>
               <Abv>난이도: {cook?.difficulty}</Abv>
               <LikeIcon src={likeStatus ? likedIcon : likeIcon} alt="Like Icon" onClick={handleLikeClick} style={{ cursor: 'pointer' }} />
               <Like>좋아요 {cook?.likes}</Like>
@@ -167,6 +190,31 @@ const CookDetailPage = () => {
             )}
           </DateContainer>
         </ExplainContainer>
+        {/* 모달 컴포넌트 */}
+        {isModalOpen && (
+          <ModalOverlay>
+            <ModalContainer>
+              <ModalHeader>
+                <ModalTitle>프로필</ModalTitle>
+                <CloseModalButton onClick={closeModal}>닫기</CloseModalButton>
+              </ModalHeader>
+              <ModalContent>
+                {/* 유저 프로필 정보를 모달에 표시 */}
+                {userProfile && (
+                  <ProfileInfo>
+                    <ProfilePicture src={userProfile.image} alt="프로필 이미지" />
+                    <div>
+                      <ProfileName>{userProfile.nickname}</ProfileName>
+                      <ProfileEmail>{userProfile.email}</ProfileEmail>
+                      <ProfileBio>{userProfile.bio}</ProfileBio>
+                      <ProfileBirthdate>생일 : {formatBirthdate(userProfile.birthDate)}</ProfileBirthdate>     
+                    </div>
+                  </ProfileInfo>
+                )}
+              </ModalContent>
+            </ModalContainer>
+          </ModalOverlay>
+        )}
       </Container>
       <Footer />
     </>
@@ -320,6 +368,85 @@ background: none;
   border: none;
   cursor: pointer;
   margin-right: 15px;
+`;
+
+// 모달 컴포넌트의 스타일
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalContainer = styled.div`
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 600px;
+`;
+
+const ModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
+const ModalTitle = styled.h2`
+  font-size: 20px;
+`;
+
+const CloseModalButton = styled.button`
+  background-color: #ccc;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+`;
+
+const ModalContent = styled.div`
+  padding: 20px;
+`;
+
+// 유저 프로필 정보의 스타일
+const ProfileInfo = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 20px;
+`;
+
+const ProfilePicture = styled.img`
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-right: 20px;
+`;
+
+const ProfileName = styled.h3`
+  font-size: 18px;
+  margin-bottom: 10px;
+`;
+
+const ProfileEmail = styled.p`
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 10px;
+`;
+
+const ProfileBio = styled.p`
+  font-size: 14px;
+  color: #444;
+`;
+
+const ProfileBirthdate = styled.p`
+  font-size: 14px;
+  color: #444;
 `;
 
 export default CookDetailPage;
